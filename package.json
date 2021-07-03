@@ -1,0 +1,63 @@
+{
+  "name": "discodeno",
+  "version": "1.5.0",
+  "private": true,
+  "dependencies": {
+    "@chec/commerce.js": "^2.7.1",
+    "@fontsource/roboto": "^4.4.5",
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.58",
+    "framer-motion": "^4.1.17",
+    "moment": "2.29.1",
+    "node-sass": "6.0.1",
+    "notistack": "^1.0.9",
+    "nouislider": "15.2.0",
+    "react": "17.0.2",
+    "react-bootstrap-switch": "15.5.3",
+    "react-datetime": "^3.0.4",
+    "react-dom": "17.0.2",
+    "react-material-ui-carousel": "^2.2.6",
+    "react-router": "5.2.0",
+    "react-router-dom": "5.2.0",
+    "react-scripts": "4.0.3",
+    "react-select": "4.3.1",
+    "react-tag-input": "^6.7.1",
+    "react-tagsinput": "^3.19.0",
+    "reactstrap": "8.9.0",
+    "rellax": "1.12.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && gulp licenses",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
+    "compile-sass": "node-sass src/assets/scss/now-ui-kit.scss src/assets/css/now-ui-kit.css",
+    "minify-sass": "node-sass src/assets/scss/now-ui-kit.scss src/assets/css/now-ui-kit.min.css --output-style compressed",
+    "map-sass": "node-sass src/assets/scss/now-ui-kit.scss src/assets/css/now-ui-kit.css --source-map true"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "optionalDependencies": {
+    "@babel/core": "7.14.6",
+    "typescript": "4.3.4"
+  },
+  "devDependencies": {
+    "gulp": "4.0.2",
+    "gulp-append-prepend": "1.0.9"
+  }
+}
