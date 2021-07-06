@@ -10,7 +10,7 @@ const service = new CommerceService()
 const Layout = (props) => {
     const context = useContext(DDContext);
     const { shoppingCart } = context;
-    const { children } = props;
+    const { children, history } = props;
     const [totalItems, setTotalItems] = useState(0)
 
     useEffect(() => {
@@ -30,7 +30,7 @@ const Layout = (props) => {
 
     return (
         <div >
-            <WhiteNavBar shoppingCart={totalItems} />
+            <WhiteNavBar shoppingCart={totalItems} history={history} />
             <div className="section-space"></div>
 
 

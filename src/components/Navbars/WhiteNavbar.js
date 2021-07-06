@@ -18,11 +18,15 @@ import {
 } from "reactstrap";
 import ShoppingCartSharpIcon from '@material-ui/icons/ShoppingCartSharp';
 import Badge from '@material-ui/core/Badge';
+import { useHistory } from "react-router-dom";
+
 
 
 function WhiteNavbar(props) {
   const [collapseOpen, setCollapseOpen] = React.useState(false);
   const { shoppingCart } = props;
+  let history = useHistory();
+
   return (
     <>
       {collapseOpen ? (
@@ -175,8 +179,10 @@ function WhiteNavbar(props) {
               <NavItem>
                 <Button
                   className="nav-link"
-                  href="https://www.creative-tim.com/product/now-ui-kit-pro-react?ref=nuk-pro-react-white-navbar"
+                  style={{ width: '90%' }}
                   target="_blank"
+                  fullWidth
+                  onClick={() => history.push('/checkout')}
                 >
                   <Badge badgeContent={shoppingCart} >
                     <ShoppingCartSharpIcon />

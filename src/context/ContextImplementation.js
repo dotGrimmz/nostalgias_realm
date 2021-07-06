@@ -23,17 +23,44 @@ class ContextImplementation extends Component {
     }
 
     initializeCart = (cart) => {
-        this.setState({ shoppingCart: cart })
+        if (cart.total_items.length === 0 || cart.total_items === undefined || cart.total_items === null) {
+            this.setState({ shoppingCart: cart, cartTotal: cart.total_items })
+
+        } else {
+            this.setState({ shoppingCart: cart, cartTotal: 0 })
+
+        }
         sessionStorage.setItem('cart', cart)
     }
 
+    handleUpdateCart = async (id, quantity) => {
+        try {
+            let updatedCart = await service.updateCart(id, quantity)
+            this.setState({ shoppingCart: updatedCart.cart, cartTotal: updatedCart.cart.total_items })
+
+
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    clearCart = async () => {
+        try {
+            let res = await service.emptyCart()
+            this.setState({ shoppingCart: res.cart, cartTotal: res.cart.total_items })
+        } catch (err) {
+            console.error(err)
+        }
+    }
 
 
     state = {
         shoppingCart: {},
         initializeCart: this.initializeCart,
         addToCart: this.addToCart,
-        cartTotal: 0
+        cartTotal: 0,
+        handleUpdateCart: this.handleUpdateCart,
+        cleartCart: this.clearCart
     }
 
 

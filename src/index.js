@@ -19,6 +19,7 @@ import Layout from './Layout/Layout';
 import LandingPage from './LandingPage/LandingPage';
 import ContextImplementation from '../src/context/ContextImplementation';
 import CatalogItemPage from './CatalogItemPage/CatalogItemPage.jsx';
+import CheckoutPage from './CheckoutPage/CheckoutPage.jsx';
 import { SnackbarProvider } from 'notistack';
 
 import '@fontsource/roboto';
@@ -42,6 +43,10 @@ ReactDOM.render(
             <Route
               path="/item/:id"
               render={(props) => <CatalogItemPage {...props} />}
+            />
+            <Route
+              path="/checkout"
+              render={(props) => <CheckoutPage {...props} />}
             />
 
             <Redirect to="/home" />

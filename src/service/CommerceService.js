@@ -37,6 +37,22 @@ class CommerceService {
     emptyCart() {
         return this.instance.cart.empty()
     }
+
+    getCheckoutData(id) {
+        return this.instance.checkout.generateTokenFrom('cart', id)
+    }
+
+    updateCart(id, quantity) {
+        return this.instance.cart.update(id, { 'quantity': quantity })
+    }
+
+    deleteCartItem(id) {
+        return this.instance.cart.remove(id)
+    }
+
+    getCardTotal(id) {
+        return this.instance.products.retrieve(id)
+    }
 }
 
 export default CommerceService;

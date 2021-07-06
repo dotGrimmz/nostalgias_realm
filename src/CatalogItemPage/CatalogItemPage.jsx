@@ -41,7 +41,7 @@ const CatalogItemPage = props => {
 
 
 
-    const [quantity, setQuantity] = useState('');
+    const [quantity, setQuantity] = useState(1);
     const [price, setPrice] = useState("");
     const [cardCount, setCardCount] = useState();
     const [imageArr, setImageArr] = useState([])
@@ -83,7 +83,6 @@ const CatalogItemPage = props => {
             try {
                 setLoading(true)
                 let res = await service.fetchSelectedProduct(match.params.id);
-                console.log(res, 'should be single product')
                 setPrice(res.price.formatted);
                 setOriginalPrice(res.price.raw)
                 setCardCount(res.inventory.available);
@@ -123,9 +122,16 @@ const CatalogItemPage = props => {
 
 
     const handleAddToCart = async (id, quantity) => {
-        let parsedQuantity = parseInt(quantity)
-        let message = await addToCart(id, parsedQuantity)
-        enqueueSnackbar(message, { variant: 'success' });
+
+        try {
+            let message = await addToCart(id, quantity)
+            console.log(quantity, 'quantity in the first clause being triggered')
+            enqueueSnackbar(message, { variant: 'success' });
+        } catch (err) {
+            console.error(err)
+        }
+
+
 
     }
 

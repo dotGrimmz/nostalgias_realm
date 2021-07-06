@@ -6,11 +6,14 @@ import Card from '@material-ui/core/Card'
 import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid';
 import CardContent from '@material-ui/core/CardContent'
-import Divider from '@material-ui/core/Divider'
+import Divider from '@material-ui/core/Divider';
+
+
 
 // core components
 
 function LandingPageHeader(props) {
+  const { banner, checkout } = props;
   let pageHeader = React.createRef();
   React.useEffect(() => {
     if (window.innerWidth > 991) {
@@ -58,7 +61,7 @@ function LandingPageHeader(props) {
           ref={pageHeader}
         ></div>
         <Container style={styles.container}>
-          <Grid container justify='flex-end'>
+          {banner && <Grid container justify='flex-end'>
             <Card raised style={styles.cardContainer}>
               <CardContent>
                 <p style={styles.text}>Deno has been collecting cards  since the 90s.</p>
@@ -66,7 +69,7 @@ function LandingPageHeader(props) {
 
               </CardContent>
             </Card>
-          </Grid>
+          </Grid>}
         </Container>
       </div>
     </>

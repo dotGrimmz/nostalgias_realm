@@ -32,6 +32,7 @@ const LandingPage = props => {
     }
 
     useEffect(() => {
+        let mounted = true;
         const fetchProducts = async () => {
             setLoading(true)
             try {
@@ -43,22 +44,29 @@ const LandingPage = props => {
                 setLoading(false)
             }
         }
-        fetchProducts()
-    }, [])
-
-    useEffect(() => {
-        const fetchCart = async () => {
-            try {
-                let res = await service.getCart()
-                console.log(res, 'the shopping cart')
-                initializeCart(res)
-            } catch (err) {
-                console.error(err)
-            }
+        if (mounted) fetchProducts();
+        return () => {
+            mounted = false
         }
 
-        fetchCart()
-    }, [initializeCart])
+
+    }, [])
+
+
+    // do we really need to fetch the cart on every landing page render?
+    // useEffect(() => {
+    //     const fetchCart = async () => {
+    //         try {
+    //             let res = await service.getCart()
+    //             console.log(res, 'the shopping cart')
+    //             initializeCart(res)
+    //         } catch (err) {
+    //             console.error(err)
+    //         }
+    //     }
+
+    //     fetchCart()
+    // }, [initializeCart])
 
     const routeToItem = (id) => {
         history.push(`/item/${id}`)
@@ -67,7 +75,7 @@ const LandingPage = props => {
 
     return (
         <>
-            <LandingPageHeader />
+            <LandingPageHeader banner />
             {loading && <div style={styles.loadingDiv}> <h1 className='text-center'>Getting all the cool kids ready ...</h1><LinearProgress /></div>}
             {!loading && <div><FeaturedItemSection featuredProducts={featuredProducts} history={history} />
                 <CatalogSection catalogObj={catalogObj} routeToItem={routeToItem} /> </div>}
