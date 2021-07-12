@@ -13,10 +13,11 @@ const service = new CommerceService();
 const LandingPage = props => {
     const { history } = props;
     const context = useContext(DDTContext);
-    const { initializeCart } = context;
+    const { featuredProducts, products } = context;
     const [loading, setLoading] = useState(false);
 
-    const [featuredProducts, setFeaturedProducts] = useState([])
+    const [_featuredProducts, setFeaturedProducts] = useState([])
+    const [pageProducts, setPageProducts] = useState([])
 
     let catalogObj = {
         page: 'Baseball',
@@ -31,26 +32,37 @@ const LandingPage = props => {
         }
     }
 
+
+
     useEffect(() => {
         let mounted = true;
-        const fetchProducts = async () => {
-            setLoading(true)
+        setLoading(true)
+
+        const getProducts = async () => {
+            let defaultProducts = []
             try {
-                let response = await service.fetchFeaturedProducts()
-                setFeaturedProducts(response.data)
+                setFeaturedProducts(await featuredProducts)
+                products.map(x => {
+                    let invalid = false
+                    x.categories.map(y => {
+                        if (y.slug === 'featured') invalid = true
+                    })
+                    if (!invalid) defaultProducts.push(x)
+                });
+                setPageProducts(defaultProducts)
             } catch (err) {
                 console.error(err)
             } finally {
                 setLoading(false)
             }
         }
-        if (mounted) fetchProducts();
+        if (mounted) getProducts();
         return () => {
             mounted = false
         }
 
 
-    }, [])
+    }, [featuredProducts, products])
 
 
     // do we really need to fetch the cart on every landing page render?
@@ -77,8 +89,8 @@ const LandingPage = props => {
         <>
             <LandingPageHeader banner />
             {loading && <div style={styles.loadingDiv}> <h1 className='text-center'>Getting all the cool kids ready ...</h1><LinearProgress /></div>}
-            {!loading && <div><FeaturedItemSection featuredProducts={featuredProducts} history={history} />
-                <CatalogSection catalogObj={catalogObj} routeToItem={routeToItem} /> </div>}
+            {!loading && <div><FeaturedItemSection featuredProducts={_featuredProducts} history={history} />
+                <CatalogSection catalogObj={catalogObj} routeToItem={routeToItem} products={pageProducts} /> </div>}
             <div className="section-space"></div>
 
         </>

@@ -2,40 +2,64 @@ import React, { useContext, useEffect, useState } from 'react';
 import WhiteNavBar from '../components/Navbars/WhiteNavbar';
 import FooterBlack from '../components/Footers/FooterBlack';
 import DDContext from '../context/DDContext';
-import CommerceService from '../service/CommerceService';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
-const service = new CommerceService()
 
 
 const Layout = (props) => {
     const context = useContext(DDContext);
-    const { shoppingCart } = context;
+    const { cart, fetchFeaturedProducts, fetchProducts, initializeCart } = context;
     const { children, history } = props;
-    const [totalItems, setTotalItems] = useState(0)
+    const [loading, setLoading] = useState(false)
+
+    const styles = {
+
+
+        loadingDiv: {
+            height: '80vh'
+        },
+        container: {
+            minHeight: '80vh'
+        },
+
+    }
 
     useEffect(() => {
-        const handleTotalItems = async () => {
-            try {
-                let cart = await service.getCart()
-                setTotalItems(cart.total_items)
+        let mounted = true
+        setLoading(true)
+        const handleLoadhandleLoad = async () => {
+            if (mounted) {
+                try {
+                    await fetchFeaturedProducts();
+                    await fetchProducts();
+                    await initializeCart()
+                } catch (err) {
+                    console.error(err)
+                } finally {
+                    setLoading(false)
+                }
 
-            } catch (err) {
-                console.error(err)
             }
-
         }
+        if (mounted) handleLoadhandleLoad()
+        return () => {
+            mounted = false
+        }
+    }, [])
 
-        handleTotalItems()
-    }, [shoppingCart])
+
+
 
     return (
         <div >
-            <WhiteNavBar shoppingCart={totalItems} history={history} />
+            <WhiteNavBar history={history} totalItems={cart.total_items} />
             <div className="section-space"></div>
 
 
-
-            {children}
+            {loading && <div style={styles.loadingDiv}><div className="section-space"></div> <LinearProgress />
+            </div>
+            }
+            {!loading && children}
 
             <FooterBlack />
         </div>

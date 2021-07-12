@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import CatalogItem from './CatalogItem';
 import Pagination from '@material-ui/lab/Pagination';
 import Slide from '@material-ui/core/Slide';
-import CommerceService from '../service/CommerceService';
 
 
 
@@ -29,12 +28,12 @@ const useStyles = makeStyles({
     }
 })
 
-const service = new CommerceService();
 
 const CatalogSection = (props) => {
-    const { page, subtitle, } = props.catalogObj;
+    const { page, subtitle } = props.catalogObj;
+    const { products } = props;
+
     const [pageNum, setPageNum] = useState(0);
-    const [catalog, setCatalog] = useState([])
 
     const classes = useStyles()
     const styles = {
@@ -52,25 +51,14 @@ const CatalogSection = (props) => {
         }
     }
 
-    useEffect(() => {
-        const fetchHomePageList = async () => {
-            try {
-                let res = await service.fetchHomePageProducts()
-                setCatalog(res.data)
-            } catch (err) {
-                console.error(err)
-            }
-        }
 
-        fetchHomePageList()
-    }, [])
 
 
 
 
     let itemsPerPage = 6;
     let itemsDisplayed = pageNum * itemsPerPage;
-    let pageCount = Math.floor(catalog.length / itemsPerPage);
+    let pageCount = Math.floor(products.length / itemsPerPage);
 
     return (
         <div className="cd-section" id="pricing" >
@@ -97,7 +85,7 @@ const CatalogSection = (props) => {
                     </Grid>
                     <Grid container spacing={2} justify='center' alignItems='center'>
 
-                        {catalog.slice(itemsDisplayed, itemsDisplayed + itemsPerPage).map((x => (
+                        {products?.slice(itemsDisplayed, itemsDisplayed + itemsPerPage).map((x => (
                             < Slide key={x.id} direction='up' timeout={{ enter: 900 }
                             } in={true}  >
                                 <Grid xs={12} md={4} item style={styles.catalogDisplay}>
@@ -127,27 +115,9 @@ const CatalogSection = (props) => {
                                 count={pageCount}
                                 classes={{ root: classes.nav }}
                             />
-
                         </Grid>
-
                     </Grid>
-                    {/* <Drawer
-                        variant='persistent'
-                        anchor="left"
-                        open={true}
-                        style={styles.drawer}
-                        classes={{
-                            paper: classes.root,
-                            paperAnchorDockedLeft: classes.paperAnchorDockedLeft,
-                            paperAnchorLeft: classes.paperAnchorDockedLeft
-                        }}
-                    >
-                        <IconButton >
-                            Hello
-                        </IconButton>
-                    </Drawer> */}
                 </Container>
-
             </div>
         </div >
     )

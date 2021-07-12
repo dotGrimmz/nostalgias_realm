@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useMemo } from 'react'
 import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
@@ -6,7 +6,7 @@ import brees from '../images/breescard.jpeg';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import DDTContext from '../context/DDContext';
 import IconButton from '@material-ui/core/IconButton';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
@@ -60,16 +60,13 @@ const useStyles = makeStyles({
 
 
 
-const ShoppingCart = props => {
+const ShoppingCart = React.memo((props) => {
     const context = useContext(DDTContext);
-    const { cleartCart } = context;
-    const { cartItems, cartData, routeToHomePage, handleUpdateQuantity, handleRemoveItem } = props;
-    const [cardCount, setCardCount] = useState();
+    const { cleartCart, handleDiscountCode, cart, checkoutToken } = context;
+    const { routeToHomePage, handleUpdateQuantity, handleRemoveItem, cartId, priceLoad } = props;
+
     const [discount, setDiscount] = useState('');
-    const [subTotal, setSubtotal] = useState('$12.32')
     const classes = useStyles();
-
-
 
 
 
@@ -101,17 +98,19 @@ const ShoppingCart = props => {
 
         }
     }
-    console.log(cartItems, 'cart items')
+
+
+
 
     return (
-        <Paper raised style={styles.container}  >
-            <Grid container justify='center'  >
-                {cartItems && cartItems.map((x) => (
+        <Paper style={styles.container}  >
+            <Grid container justify='center' spacing={2} >
+                {cart?.line_items?.length > 0 && cart?.line_items?.map((x) => (
                     <Grid key={x.id} item xs={12} align='center' style={styles.cartItem}>
                         <CartItem name={x.name}
                             image={x.media.source}
-                            price={x.price.raw}
-                            selected={x.quantity}
+                            price={x.line_total.formatted}
+                            quantity={x.quantity}
                             handleUpdateQuantity={handleUpdateQuantity}
                             handleRemoveItem={handleRemoveItem}
                             id={x.id}
@@ -119,22 +118,25 @@ const ShoppingCart = props => {
                         />
                     </Grid>
                 ))}
-                {cartItems.length <= 0 && <h1 className="text-center">Your Shopping Cart Is Empty</h1>}
-
+                {cart?.line_items?.length <= 0 && <h1 className="text-center">Your Shopping Cart Is Empty</h1>}
                 <Grid item xs={12} style={styles.divider}>
                     <Divider variant='middle' />
                 </Grid>
-                <Grid item xs={6} align='center'>
+                <Grid item xs={6} >
                     <TextField
                         fullWidth
                         value={discount}
+                        onChange={(e) => setDiscount(e.target.value)}
                         name="discount"
-                        label='Enter Discount Code'
+                        label='Discount Code'
                         variant='outlined'
                     />
                 </Grid>
                 <Grid item xs={2} align='center' >
-                    <IconButton variant='contained' classes={{ root: classes.updateBtn }}>
+                    <IconButton variant='contained'
+                        classes={{ root: classes.updateBtn }}
+                        onClick={() => handleDiscountCode(cartId, discount)}
+                    >
                         Apply
                     </IconButton>
                 </Grid>
@@ -149,53 +151,61 @@ const ShoppingCart = props => {
                 </Grid>
                 <Grid item xs={12} md={6} style={{ alignSelf: 'center', padding: '3%' }}>
                     <Button onClick={() => routeToHomePage()} fullWidth classes={{ root: classes.shopBtn }} variant='contained' color='primary'>
-                        Back To Shopping
+                        Check Out
                     </Button>
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Card raised classes={{ root: classes.cardContainer }} >
-                        <CardContent  >
+                        {priceLoad && <div ><div style={{ padding: '3%' }} className="text-center section-space"><CircularProgress color='secondary' /></div>
+                        </div>
+                        }
+                        {!priceLoad && <CardContent  >
                             <Grid container justify='space-between' style={{ backgroundColor: 'transparent', }} >
                                 <Grid item xs={6} align='left'  >
-                                    <Typography variant='h5' style={{ backgroundColor: 'white', width: '35%' }} >Subtotal</Typography>
+                                    <Typography variant='h5' style={{ width: '35%' }} >Subtotal</Typography>
                                 </Grid>
                                 <Grid item xs={6} align="right" >
-                                    <Typography style={{ backgroundColor: 'white', width: '30%' }} variant='h6'>{subTotal}</Typography>
+                                    <Typography style={{ width: '30%' }} variant='h6'>{checkoutToken?.live?.subtotal?.formatted_with_symbol}</Typography>
                                 </Grid>
                                 <Grid item xs={6} align='left'>
                                     <Typography variant='h5' >Tax</Typography>
                                 </Grid>
                                 <Grid item xs={6} align="right">
-                                    <Typography style={{ backgroundColor: 'white', width: '30%' }} variant='h6'>{subTotal}</Typography >
+                                    <Typography style={{ width: '30%' }} variant='h6'>{checkoutToken?.live?.tax?.amount?.formatted_with_symbol}</Typography >
                                 </Grid>
                                 <Grid item xs={6} align='left'>
-                                    <Typography variant='h5' style={{ backgroundColor: 'white', width: '35%' }} >Shipping</Typography>
+                                    <Typography variant='h5' style={{ width: '35%' }} >Shipping</Typography>
                                 </Grid>
                                 <Grid item xs={6} align="right">
-                                    <Typography style={{ backgroundColor: 'white', width: '30%' }} variant='h6'>{subTotal}</Typography >
+                                    <Typography style={{ width: '30%' }} variant='h6'>{checkoutToken?.live?.shipping?.price?.formatted_with_symbol}</Typography >
                                 </Grid>
                                 <Grid item xs={6} align='left'>
-                                    <Typography variant='h5' style={{ backgroundColor: 'white', width: '35%' }} >Discount</Typography>
+                                    <Typography variant='h5' style={{ width: '35%' }} >Discount</Typography>
                                 </Grid>
                                 <Grid item xs={6} align="right">
-                                    <Typography style={{ backgroundColor: 'white', width: '30%' }} variant='h6'>{subTotal}</Typography >
+                                    <Typography style={{ width: 'auto' }} variant='h6'>{checkoutToken?.live?.discount?.length === 0 ? "No Discount Applied" : checkoutToken?.live?.discount?.amount_saved?.formatted_with_symbol}</Typography >
                                 </Grid>
                                 <Grid item xs={12} style={styles.divider}>
                                     <Divider variant='middle' />
                                 </Grid>
                                 <Grid item xs={6} align='left'>
-                                    <Typography variant='h5' style={{ backgroundColor: 'white', width: '55%' }} >Total Amount</Typography>
+                                    <Typography variant='h5' style={{ width: '55%' }} >Total Amount</Typography>
                                 </Grid>
                                 <Grid item xs={6} align="right">
-                                    <Typography style={{ backgroundColor: 'white', width: '30%' }} variant='h6'>{cartData}</Typography >
+                                    <Typography style={{ width: '30%' }} variant='h6'>{checkoutToken?.live?.total_with_tax?.formatted_with_symbol}</Typography >
                                 </Grid>
                             </Grid>
-                        </CardContent>
+                        </CardContent>}
                     </Card>
                 </Grid>
             </Grid>
-        </Paper>
+        </Paper >
     )
-}
+}, (prevProps, nextProps) => {
+    if (prevProps.lastUpdated !== nextProps.lastUpdated) {
+        return true
+    }
+    return false
+})
 
 export default ShoppingCart;

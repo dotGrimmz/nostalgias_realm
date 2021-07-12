@@ -37,7 +37,7 @@ const CatalogItemPage = props => {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const { addToCart } = context;
+    const { addToCart, cart, handleUpdateCart, fetchSelectedProduct } = context;
 
 
 
@@ -79,10 +79,11 @@ const CatalogItemPage = props => {
         return arr
     }
     useEffect(() => {
-        const fetchSelectedProduct = async () => {
+        let mounted = true
+        const getSelectedProduct = async () => {
             try {
                 setLoading(true)
-                let res = await service.fetchSelectedProduct(match.params.id);
+                let res = await fetchSelectedProduct(match.params.id);
                 setPrice(res.price.formatted);
                 setOriginalPrice(res.price.raw)
                 setCardCount(res.inventory.available);
@@ -98,34 +99,24 @@ const CatalogItemPage = props => {
             }
         }
 
-        fetchSelectedProduct()
+        if (mounted) getSelectedProduct();
+        return () => {
+            mounted = false
+        }
     }, [match.params.id])
 
-    useEffect(() => {
-        const adjustPriceToQuantity = () => {
-            console.log(originalPrice, quantity, 'multiply these two')
-            if (quantity === "") {
 
-                let updatedPrice = originalPrice * 1
-                setPrice(updatedPrice)
-            } else {
-                let updatedPrice = originalPrice * quantity
-                setPrice(updatedPrice)
-            }
-        }
-        adjustPriceToQuantity()
-    }, [quantity, originalPrice])
 
     const routeToItem = (id) => {
         history.push(`/item/${id}`)
     }
 
 
-    const handleAddToCart = async (id, quantity) => {
+    const handleAddToCart = async (id) => {
 
         try {
-            let message = await addToCart(id, quantity)
-            console.log(quantity, 'quantity in the first clause being triggered')
+            let message = await addToCart(id, 1);
+            console.log(message, 'message')
             enqueueSnackbar(message, { variant: 'success' });
         } catch (err) {
             console.error(err)
@@ -178,18 +169,7 @@ const CatalogItemPage = props => {
                                     <p className="description text-center" style={{ color: 'black' }}> Please allow up to 1 business day for shipping confirmation  </p>
 
                                 </Grid>
-                                <Grid item xs={6} align='center'>
-                                    <Select
-                                        value={quantity}
-                                        onChange={(e) => setQuantity(e.target.value)}
-                                    >
-                                        {!loading && counter().map(x => (
-                                            < MenuItem key={x} value={x} > {x}</MenuItem>
-                                        ))}
-                                    </Select>
-                                    <br />
-                                    <p className='text-center'>Quantity</p>
-                                </Grid>
+
                                 <Grid item xs={6}>
                                     <h3 className="title text-center">${price}</h3>
                                 </Grid>

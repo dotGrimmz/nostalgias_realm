@@ -5,9 +5,8 @@ import Slide from '@material-ui/core/Slide';
 import DDTContext from '../context/DDContext';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import UpdateIcon from '@material-ui/icons/Update';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import RemoveCircleOutlinedIcon from '@material-ui/icons/RemoveCircleOutlined';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ToolTip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
@@ -16,11 +15,19 @@ import CommerceService from '../service/CommerceService';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
-    updateBtn: {
+    addBtn: {
         background: "radial-gradient(ellipse at center," +
             "white" +
             " 0," +
             "green" +
+            " 100%)",
+        color: 'black'
+    },
+    removeBtn: {
+        background: "radial-gradient(ellipse at center," +
+            "white" +
+            " 0," +
+            "maroon" +
             " 100%)",
         color: 'black'
     },
@@ -38,12 +45,12 @@ const service = new CommerceService()
 
 const CartItem = (props) => {
 
-    const { name, image, price, id, selected, handleUpdateQuantity, handleRemoveItem, productId } = props;
-    const [quantity, setQuantity] = useState(1);
-    const [toggleSelect, setToggleSelect] = useState(false);
-    const [cardCount, setCardCount] = useState(1)
+    const { name, image, price, id, quantity, handleUpdateQuantity, productId } = props;
     const [loading, setLoading] = useState(false)
 
+
+    const context = useContext(DDTContext);
+    const { handleRemoveItem } = context;
     const classes = useStyles();
 
 
@@ -66,69 +73,46 @@ const CartItem = (props) => {
 
     }
 
-    useEffect(() => {
-        const fetchCardTotal = async (id) => {
-            setLoading(true)
-            try {
-                let res = await service.getCardTotal(id)
-                setCardCount(res.inventory.available)
-            } catch (err) {
-                console.error(err)
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchCardTotal(productId)
-    }, [])
 
 
 
 
-    const counter = () => {
-        let arr = [];
-        for (let i = 1; i <= cardCount; i++) {
-            i.toString()
-            arr.push(i)
-        }
-        return arr
-    }
+
     return (
-        <Slide direction='up' timeout={{ enter: 900 }} in={!loading}  >
+        <Slide direction='up' timeout={{ enter: 200 }} in={!loading}  >
 
             <Card style={styles.container} raised >
 
                 <Grid container justify='flex-start' alignItems='center'>
-                    <Grid item md={2} xs={12}>
+                    <Grid item md={2} xs={12} >
                         <img src={image} alt={name} style={styles.image} />
                     </Grid>
                     <Grid item md={4} xs={12}>
                         <h2 className="title text-center">{name}</h2>
-                        <InputLabel id="label">{selected}</InputLabel>
+                        <InputLabel id="label">{quantity}</InputLabel>
+                        <p className="text-center">Quantity</p>
 
 
-                        <Button variant='outlined' className='text-center' onClick={() => setToggleSelect(!toggleSelect)}>Quantity</Button>
                     </Grid>
-                    <Grid item align='center' xs={6} md={2} >
-                        <ToolTip title="Update Quantity" aria-label="update" placement='top' >
-                            <IconButton classes={{ root: classes.updateBtn }} onClick={() => handleUpdateQuantity(id, quantity)} >
-                                <UpdateIcon />
+                    <Grid item align='center' xs={6} md={1} >
+                        <ToolTip title="Add Quantity" aria-label="add" placement='top' >
+                            <IconButton classes={{ root: classes.addBtn }} onClick={() => handleUpdateQuantity(id, quantity + 1)} >
+                                <AddCircleIcon />
                             </IconButton>
                         </ToolTip>
-                        <br />
 
-                        {toggleSelect && <Select
-                            labelId='label'
-                            id='select'
-                            value={quantity}
-                            onChange={(e) => setQuantity(e.target.value)}
-                            label="title"
-                        >
-                            {!loading && counter().map((x, i) => (
-                                < MenuItem key={x} value={x} > {x}</MenuItem>
-                            ))}
-                        </Select>}
+
                     </Grid>
-                    <Grid item align='center' xs={6} md={2}>
+                    <Grid item align='center' xs={6} md={1} >
+                        <ToolTip title="Remove " aria-label="remove" placement='top' >
+                            <IconButton classes={{ root: classes.removeBtn }} onClick={() => handleUpdateQuantity(id, quantity - 1)} >
+                                <RemoveCircleOutlinedIcon />
+                            </IconButton>
+                        </ToolTip>
+
+
+                    </Grid>
+                    <Grid item align='center' xs={12} md={2}>
                         <ToolTip title="Remove Item" placement='top' aria-label="delete">
 
                             <IconButton classes={{ root: classes.deleteBtn }} onClick={() => handleRemoveItem(id)}>
@@ -139,7 +123,7 @@ const CartItem = (props) => {
                     </Grid>
                     <Grid item align='center' md={2} xs={12} >
 
-                        <h2 className="title text-center">${price * selected}</h2>
+                        <h2 className="title text-center">${price}</h2>
 
                     </Grid>
                 </Grid>

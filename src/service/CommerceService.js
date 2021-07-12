@@ -21,7 +21,7 @@ class CommerceService {
         })
     }
 
-    fetchHomePageProducts() {
+    fetchAllProducts() {
         return this.instance.products.list()
     }
 
@@ -53,6 +53,29 @@ class CommerceService {
     getCardTotal(id) {
         return this.instance.products.retrieve(id)
     }
+
+    validateDiscount(id, code) {
+        console.log(code, 'code in the service')
+        return this.instance.checkout.checkDiscount(id, { code })
+    }
+
+    fetchShippingCountries(id) {
+        return this.instance.services.localeListShippingCountries(id)
+    }
+
+    fetchShippingSubdivisions() {
+        return this.instance.services.localeListSubdivisions('US')
+    }
+
+    fetchShippingOptions(id, region) {
+        return this.instance.checkout.getShippingOptions(id, { country: 'US', region: region })
+    }
+
+    generateCheckoutToken(cartId) {
+        return this.instance.checkout.generateToken(cartId, { type: 'cart' })
+    }
+
+
 }
 
 export default CommerceService;

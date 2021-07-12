@@ -49,7 +49,7 @@ const ItemCard = (props) => {
         history.push(`/item/${id}`)
     }
     return (
-        <Grid container justify='center' >
+        <Grid container justify='center' alignItems='center' >
             <Grid item xs={12} style={styles.itemContainer}>
                 <motion.div whileHover={{ scale: 1.04, cursor: 'pointer' }}>
                     <Card onClick={handleSelect} raised style={styles.card} />
@@ -63,13 +63,13 @@ const ItemCard = (props) => {
                     <b>{title} </b>
                 </h4>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} align='center'>
                 <p style={styles.label}>Condition:<b> MINT</b></p>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} align='center'>
                 <p style={styles.price}>${price}</p>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} align='center'>
                 <p style={styles.quantity}>{quantity} <br /> Quantity </p>
 
             </Grid>

@@ -24,7 +24,7 @@ import { useHistory } from "react-router-dom";
 
 function WhiteNavbar(props) {
   const [collapseOpen, setCollapseOpen] = React.useState(false);
-  const { shoppingCart } = props;
+  const { totalItems } = props;
   let history = useHistory();
 
   return (
@@ -184,7 +184,7 @@ function WhiteNavbar(props) {
                   fullWidth
                   onClick={() => history.push('/checkout')}
                 >
-                  <Badge badgeContent={shoppingCart} >
+                  <Badge badgeContent={totalItems} >
                     <ShoppingCartSharpIcon />
 
                   </Badge>
