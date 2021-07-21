@@ -30,9 +30,9 @@ const Layout = (props) => {
         const handleLoadhandleLoad = async () => {
             if (mounted) {
                 try {
+                    await initializeCart()
                     await fetchFeaturedProducts();
                     await fetchProducts();
-                    await initializeCart()
                 } catch (err) {
                     console.error(err)
                 } finally {
@@ -52,7 +52,7 @@ const Layout = (props) => {
 
     return (
         <div >
-            <WhiteNavBar history={history} totalItems={cart.total_items} />
+            <WhiteNavBar history={history} totalItems={cart?.total_items} />
             <div className="section-space"></div>
 
 

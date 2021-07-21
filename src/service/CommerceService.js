@@ -75,6 +75,13 @@ class CommerceService {
         return this.instance.checkout.generateToken(cartId, { type: 'cart' })
     }
 
+    captureCheckoutToken(checkoutTokenId, newOrder) {
+        return this.instance.checkout.capture(checkoutTokenId, newOrder)
+    }
+
+    refreshCart() {
+        return this.instance.cart.refresh()
+    }
 
 }
 

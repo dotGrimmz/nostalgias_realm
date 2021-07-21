@@ -209,3 +209,8 @@ const ShoppingCart = React.memo((props) => {
 })
 
 export default ShoppingCart;
+
+// Shipping policy	
+// All orders are shipped within 2-3 business days excluding holidays. Unfortunately, we're not responsible for lost or stolen packages.
+//  Once the package shipping status updates as "delivered", the transaction is considered final. Any further questions about shipping and tracking, 
+//  feel free to contact us masterchefmeta@gmail.com

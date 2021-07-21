@@ -65,20 +65,6 @@ const LandingPage = props => {
     }, [featuredProducts, products])
 
 
-    // do we really need to fetch the cart on every landing page render?
-    // useEffect(() => {
-    //     const fetchCart = async () => {
-    //         try {
-    //             let res = await service.getCart()
-    //             console.log(res, 'the shopping cart')
-    //             initializeCart(res)
-    //         } catch (err) {
-    //             console.error(err)
-    //         }
-    //     }
-
-    //     fetchCart()
-    // }, [initializeCart])
 
     const routeToItem = (id) => {
         history.push(`/item/${id}`)

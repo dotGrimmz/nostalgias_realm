@@ -14,7 +14,7 @@ const service = new CommerceService();
 const CheckoutPage = props => {
     const { history } = props;
     const context = useContext(DDTContext);
-    const { cart, handleUpdateCart, fetchShippingSubdivisions,
+    const { cart, handleUpdateCart, setCheckoutForm,
         checkoutToken, countries, handleRemoveItem, getCheckoutToken,
         setCheckoutTokenToEmpty, states } = context;
     const { enqueueSnackbar } = useSnackbar();
@@ -44,9 +44,8 @@ const CheckoutPage = props => {
                 // await fetchShippingSubdivisions()
                 setCartItems(cart.line_items)
                 console.log('triggered in fetch cart useEffect')
-                if (cart.line_items.length !== 0) {
-                    // let res = await service.getCheckoutData(cart.id)
-                    // console.log(res, 'checkout data')
+                if (cart?.line_items?.length !== 0) {
+
                     setCartData(checkoutToken.live)
                     setCartId(cart.id)
                     console.log('triggered if cart is empty')
@@ -66,32 +65,6 @@ const CheckoutPage = props => {
 
     }, [cart]);
 
-    // useEffect(() => {
-    //     let mounted = true
-    //     const fetchShippingCartOptions = async () => {
-    //         try {
-    //             await fetchShippingOptions(checkoutToken.id, shippingSubdivision)
-    //             console.log('triggered after shipping options endpoint is hit and is not null')
-
-
-
-    //         } catch (err) {
-    //             console.error(err)
-    //         }
-    //     }
-
-    //     // if (checkoutToken.id !== undefined || checkoutToken.id !== null || shippingSubdivision !== "") {
-    //     if (mounted) {
-    //         console.log(checkoutToken.id, 'how sway')
-
-    //         fetchShippingCartOptions()
-    //     }
-
-    //     // }
-    //     return () => {
-    //         mounted = false
-    //     }
-    // }, [checkoutToken])
 
 
     useEffect(() => {
@@ -105,12 +78,7 @@ const CheckoutPage = props => {
                         setCheckoutTokenToEmpty()
                     } else {
                         await getCheckoutToken(cart?.id)
-                        console.log('triggered after checkout token is updated')
-
-
                     }
-
-
                     setCartData(checkoutToken?.live)
                 } catch (err) {
                     console.error(err)
@@ -142,15 +110,13 @@ const CheckoutPage = props => {
         setLoading(true)
         try {
             console.log(quantity, 'handle update')
-            let updatedCart = await handleUpdateCart(id, quantity)
+            await handleUpdateCart(id, quantity)
 
             enqueueSnackbar('Successfully Updated', { variant: 'success' });
 
         } catch (err) {
             console.error(err)
         } finally {
-            // setCartData(checkoutToken.live)
-
             setLoading(false)
 
         }
@@ -158,25 +124,35 @@ const CheckoutPage = props => {
 
     const removeItem = async (id) => {
         setLoading(true)
-
         try {
-            let res = await handleRemoveItem(id)
-            console.log(res, 'coming back from updated removed')
-            // setCartItems(updatedCart.cart.line_items)
-
+            await handleRemoveItem(id)
             enqueueSnackbar('Successfully Removed Item', { variant: 'success' });
             if (cart.total_items === 0) {
-                console.log('should be empty cart =[')
                 setCartItems([])
             }
-
-
         } catch (err) {
-
         } finally {
             setLoading(false)
         }
     }
+
+
+    const handleFormSubmit = (data, errorHandler) => {
+        console.log(data, 'form state')
+        if (data.shippingCountry === undefined || data.cartShippingOption === undefined || data.shippingSubdivision === undefined) {
+            console.log('the form is missing fields')
+            errorHandler(true);
+            setTimeout(() => errorHandler(false)
+                , 3000)
+            return false
+        } else {
+            setCheckoutForm(data)
+            history.push('/paymentreview')
+
+        }
+    }
+
+
 
 
     return (
@@ -203,9 +179,10 @@ const CheckoutPage = props => {
                         shippingSubdivision={shippingSubdivision}
                         cartShippingOption={cartShippingOption}
                         setCartShippingOption={setCartShippingOption}
-
+                        handleFormSubmit={handleFormSubmit}
                         shippingCountry={shippingCountry}
                         setShippingCountry={setShippingCountry}
+
                     />}
 
                 </Container>}
@@ -226,4 +203,3 @@ const CheckoutPage = props => {
 export default CheckoutPage
 
 
-// gotta figure out how to do taxes and shipping and checkout token

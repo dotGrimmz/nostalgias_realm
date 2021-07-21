@@ -70,14 +70,7 @@ const CatalogItemPage = props => {
     }
 
 
-    const counter = () => {
-        let arr = [];
-        for (let i = 1; i <= cardCount; i++) {
-            i.toString()
-            arr.push(i)
-        }
-        return arr
-    }
+
     useEffect(() => {
         let mounted = true
         const getSelectedProduct = async () => {

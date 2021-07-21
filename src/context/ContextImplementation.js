@@ -10,15 +10,20 @@ class ContextImplementation extends Component {
 
 
     componentDidMount = async () => {
-        // console.log(JSON.parse(window.sessionStorage.getItem('cart')), 'sesssion storage cart')
+
         try {
+
             let cart = await service.getCart()
             this.setState({ cart: cart })
             console.log(this.state.cart, 'cart on mount')
+            console.log('this triggered first')
             if (cart?.line_items?.length > 0) {
+                console.log(cart.id, 'cart id')
                 let token = await this.getCheckoutToken(cart.id)
-                console.log(token, 'should be the token')
-                this.setState({ checkoutToken: token })
+
+                if (token !== undefined) this.setState({ checkoutToken: token })
+
+                console.log('happened in compoinent did mount')
             }
         } catch (err) {
             console.error(err)
@@ -56,29 +61,25 @@ class ContextImplementation extends Component {
 
     initializeCart = async () => {
 
-        if (window.sessionStorage.getItem('cart') !== null) {
-            try {
-                let cart = await service.getCart();
 
-                this.setState({ cart: cart })
-                if (cart.line_items.length > 0) {
-                    let token = await this.getCheckoutToken(cart?.id)
-                    console.log(token, 'should be the token')
-                    this.setState({ checkoutToken: token })
-                }
+        try {
+            let cart = await service.getCart();
 
-                window.sessionStorage.setItem('cart', cart)
-                console.log('fetching cart complete')
-            } catch (err) {
-                console.error(err)
+            this.setState({ cart: cart })
+            if (cart.line_items.length > 0) {
+
+                let token = await this.getCheckoutToken(cart?.id)
+                console.log(token, 'should be the token in initalize cart')
+                if (token !== undefined) this.setState({ checkoutToken: token })
+
             }
-        } else {
-            let parsedCart = JSON.parse(window.sessionStorage.getItem('cart'))
 
-            this.setState({ cart: parsedCart })
-
-            console.log('gettin cart from session storage')
+            window.sessionStorage.setItem('cart', cart)
+            console.log('fetching cart complete after initialization')
+        } catch (err) {
+            console.error(err)
         }
+
     }
 
     handleUpdateCart = async (id, quantity) => {
@@ -88,10 +89,7 @@ class ContextImplementation extends Component {
             if (updatedCart.total_items > 0) {
                 let token = await this.getCheckoutToken(updatedCart.id)
                 this.setState({ checkoutToken: token })
-
             }
-
-
         } catch (err) {
             console.error(err)
         }
@@ -188,10 +186,11 @@ class ContextImplementation extends Component {
     }
 
     getCheckoutToken = async (cartId) => {
+        console.log(cartId, 'should be the cart id to generate the checkout token')
         try {
             let token = await service.generateCheckoutToken(cartId)
             this.setState({ checkoutToken: token })
-            console.log(token, 'checkout token')
+            console.log(token, 'checkout token in get checkout token')
         } catch (err) {
             console.error(err)
         }
@@ -200,6 +199,35 @@ class ContextImplementation extends Component {
     setCheckoutTokenToEmpty = () => {
         console.log('cart must be empty so this triggers')
         this.setState({ checkoutToken: {} })
+    }
+
+    setCheckoutForm = data => {
+        this.setState({ formData: data })
+        window.sessionStorage.setItem('formData', data)
+    }
+
+    refreshCart = async () => {
+        try {
+            let cart = await service.refreshCart()
+            this.setState({ cart: cart })
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    handleCaptureCheckout = async (id, order) => {
+        try {
+            let res = await service.captureCheckoutToken(id, order)
+            console.log(res, 'res from payment')
+
+            // I have no idea why this is reloading my page much less what the fuck is happening when I hit submit on the damn form
+            this.setState({ order: res })
+            this.refreshCart()
+            console.log(res, 'cap[tured checkout from the context')
+        } catch (err) {
+            console.error(err)
+            this.setState({ errorMessage: err.data.error.message })
+        }
     }
 
 
@@ -211,6 +239,9 @@ class ContextImplementation extends Component {
         countries: [],
         checkoutToken: {},
         shippingOptions: [],
+        formData: {},
+        order: {},
+        errorMessage: '',
         initializeCart: this.initializeCart,
         addToCart: this.addToCart,
         cartTotal: 0,
@@ -225,7 +256,9 @@ class ContextImplementation extends Component {
         getCheckoutToken: this.getCheckoutToken,
         fetchShippingOptions: this.fetchShippingOptions,
         handleRemoveItem: this.handleRemoveItem,
-        setCheckoutTokenToEmpty: this.setCheckoutTokenToEmpty
+        setCheckoutTokenToEmpty: this.setCheckoutTokenToEmpty,
+        setCheckoutForm: this.setCheckoutForm,
+        handleCaptureCheckout: this.handleCaptureCheckout
     }
 
 

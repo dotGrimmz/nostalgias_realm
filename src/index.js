@@ -6,6 +6,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
 // styles
 import "assets/css/bootstrap.min.css";
@@ -20,41 +22,49 @@ import LandingPage from './LandingPage/LandingPage';
 import ContextImplementation from '../src/context/ContextImplementation';
 import CatalogItemPage from './CatalogItemPage/CatalogItemPage.jsx';
 import CheckoutPage from './CheckoutPage/CheckoutPage.jsx';
+import PaymentReviewPage from './PaymentReviewPage/PaymentReviewPage.jsx';
 import { SnackbarProvider } from 'notistack';
 
 import '@fontsource/roboto';
 
 
 // others
+const promise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 ReactDOM.render(
-  <SnackbarProvider>
-    <ContextImplementation>
+  <Elements stripe={promise}>
 
-      <BrowserRouter>
-        <Layout>
-          <Switch>
+    <SnackbarProvider>
+      <ContextImplementation>
 
+        <BrowserRouter>
+          <Layout>
+            <Switch>
+              <Route
+                path="/home"
+                render={(props) => <LandingPage {...props} />}
+              />
+              <Route
+                path="/item/:id"
+                render={(props) => <CatalogItemPage {...props} />}
+              />
+              <Route
+                path="/checkout"
+                render={(props) => <CheckoutPage {...props} />}
+              />
+              <Route
+                path="/paymentreview"
+                render={(props) => <PaymentReviewPage {...props} />}
+              />
 
-            <Route
-              path="/home"
-              render={(props) => <LandingPage {...props} />}
-            />
-            <Route
-              path="/item/:id"
-              render={(props) => <CatalogItemPage {...props} />}
-            />
-            <Route
-              path="/checkout"
-              render={(props) => <CheckoutPage {...props} />}
-            />
+              <Redirect to="/home" />
+            </Switch>
+          </Layout>
+        </BrowserRouter>
+      </ContextImplementation>
+    </SnackbarProvider>
+  </Elements>
 
-            <Redirect to="/home" />
-          </Switch>
-        </Layout>
-      </BrowserRouter>
-    </ContextImplementation>
-  </SnackbarProvider>
   ,
   document.getElementById("root")
 );
