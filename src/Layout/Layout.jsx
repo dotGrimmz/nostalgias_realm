@@ -8,7 +8,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 const Layout = (props) => {
     const context = useContext(DDContext);
-    const { cart, fetchFeaturedProducts, fetchProducts, initializeCart } = context;
+    const { cart, fetchFeaturedProducts, fetchProducts, initializeCart, fetchIPAddress, checkoutToken, handleTaxInfo, states, getCheckoutToken } = context;
     const { children, history } = props;
     const [loading, setLoading] = useState(false)
 
@@ -24,15 +24,33 @@ const Layout = (props) => {
 
     }
 
+
+    // this might be seperated out to add into finding the token id seperately
+    // if (cart.line_items.length > 0) {
+
+    //     let token = await this.getCheckoutToken(cart?.id)
+    //     console.log(token, 'should be the token in initalize cart')
+    //     if (token !== undefined) this.setState({ checkoutToken: token })
+
+    // }
     useEffect(() => {
         let mounted = true
         setLoading(true)
-        const handleLoadhandleLoad = async () => {
+        const handleLoadhandleLoad = async (cartId) => {
             if (mounted) {
                 try {
-                    await initializeCart()
+                    await initializeCart();
+                    console.log('cart initialized completed')
+
+
+
+                    // initialize checkout token
                     await fetchFeaturedProducts();
+                    console.log('featured products completed');
+
                     await fetchProducts();
+                    console.log('products completed')
+
                 } catch (err) {
                     console.error(err)
                 } finally {
@@ -45,6 +63,15 @@ const Layout = (props) => {
         return () => {
             mounted = false
         }
+    }, []);
+
+    // handle the geo location shit
+    useEffect(async () => {
+        let location = await fetchIPAddress()
+        let abbv = states?.find(x => x.label === location.region)
+        await handleTaxInfo(checkoutToken?.id, abbv?.id, location?.postal_zip_code)
+        console.log('tax info loaded')
+
     }, [])
 
 

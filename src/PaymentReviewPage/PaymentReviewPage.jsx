@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -8,18 +8,35 @@ import Divider from '@material-ui/core/Divider';
 import { useForm } from "react-hook-form";
 import { ElementsConsumer, CardElement } from '@stripe/react-stripe-js';
 import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+import { useSnackbar } from 'notistack';
 
 
 
+
+const useStyles = makeStyles({
+    shopBtn: {
+        background:
+            "radial-gradient(ellipse at center," +
+            "black" +
+            " 0," +
+            "grey" +
+            " 100%)",
+    },
+
+});
 
 
 const PaymentReviewPage = props => {
     const [loading, setLoading] = useState(false);
     const [paymentLoad, setPaymentLoad] = useState(false);
     const context = useContext(DDContext);
-    const { history } = props;
+    const classes = useStyles();
 
-    const { cart, formData, checkoutToken, handleCaptureCheckout } = context;
+    const { history } = props;
+    const { enqueueSnackbar } = useSnackbar();
+
+    const { cart, formData, checkoutToken, handleCaptureCheckout, setCheckoutForm, errorMessage } = context;
     const { register, getValues } = useForm()
 
 
@@ -29,12 +46,20 @@ const PaymentReviewPage = props => {
         loadingDiv: {
             height: '80vh'
         },
+        container: {
+            minHeight: '80vh',
+            backgroundColor: 'white'
+
+        },
+        stripeContainer: {
+            border: '1px solid black',
+            padding: '2%',
+            backgroundColor: 'lightgrey'
+        }
 
     }
 
-    const handleReturnToCheckoutForm = () => {
-        history.push("/checkout")
-    }
+
 
     const cardStyle = {
         style: {
@@ -54,7 +79,17 @@ const PaymentReviewPage = props => {
         }
     };
 
-    console.log(formData, 'form data')
+    // console.log(formData, 'form data')
+
+    useEffect(() => {
+        let data = window.sessionStorage.getItem('formData')
+        if (!formData.firstName && data) {
+            setCheckoutForm(JSON.parse(data))
+        } else {
+            console.log('form data does exist!')
+        }
+    }, [formData])
+
 
     const handlePaymentSubmit = async (e, elements, stripe) => {
         e.preventDefault();
@@ -64,7 +99,6 @@ const PaymentReviewPage = props => {
 
         const { error, paymentMethod } = await stripe.createPaymentMethod({ type: 'card', card: cardElement })
 
-        console.log(paymentMethod, 'payment method')
         if (error) {
             console.error(error)
         } else {
@@ -101,22 +135,25 @@ const PaymentReviewPage = props => {
 
             }
             console.log(orderData, 'order data')
-            await handleCaptureCheckout(checkoutToken.id, orderData)
-            setPaymentLoad(false)
+            let res = await handleCaptureCheckout(checkoutToken.id, orderData)
+            if (!res) {
+                enqueueSnackbar(errorMessage || 'There was an Error', { variant: 'error' });
+            }
         }
+        setPaymentLoad(false)
+
     }
 
 
 
-    console.log(checkoutToken, 'checkout token in the payment review')
     return (
         <div className="cd-section" id="pricing">
             <div>
                 {loading && <div style={styles.loadingDiv}><div className="section-space"></div> <LinearProgress />
                 </div>}
-                {!loading && <Container>
+                {!loading && <Container style={styles.container}>
                     <h1 className='title text-center'> Payment Reivew</h1>
-                    <Grid container alignItems='center'>
+                    <Grid container alignItems='center' >
                         <Grid item xs={12} md={6}>
                             <Grid container spacing={4} >
                                 {cart?.line_items?.map(x => (
@@ -145,7 +182,7 @@ const PaymentReviewPage = props => {
 
                         {/* swipe */}
                         <Grid item xs={12} md={6}>
-                            <Grid container align='center'>
+                            <Grid container align='center' style={styles.stripeContainer}>
                                 <Grid item xs={12}>
 
                                     <ElementsConsumer >
@@ -153,13 +190,11 @@ const PaymentReviewPage = props => {
                                             <form onSubmit={(e) => handlePaymentSubmit(e, elements, stripe)}>
                                                 <div style={{ backgroundColor: 'transparent', width: 'auto' }}>
                                                     <CardElement options={cardStyle} />
-
                                                 </div>
-                                                <br />
                                                 <br />
                                                 <div>
 
-                                                    <Button variant='outlined' fullWidth type='submit' disabled={paymentLoad}>
+                                                    <Button variant='contained' color='primary' fullWidth type='submit' disabled={paymentLoad} classes={{ root: classes.shopBtn }}>
                                                         Pay {checkoutToken?.live?.total_with_tax.formatted_with_symbol}
                                                     </Button>
 

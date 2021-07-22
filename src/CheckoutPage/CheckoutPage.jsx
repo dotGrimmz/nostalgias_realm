@@ -15,17 +15,16 @@ const CheckoutPage = props => {
     const { history } = props;
     const context = useContext(DDTContext);
     const { cart, handleUpdateCart, setCheckoutForm,
-        checkoutToken, countries, handleRemoveItem, getCheckoutToken,
-        setCheckoutTokenToEmpty, states } = context;
+        checkoutToken, countries, handleRemoveItem, fetchLiveCheckoutToken,
+        setCheckoutTokenToEmpty, states, getCheckoutToken } = context;
     const { enqueueSnackbar } = useSnackbar();
 
     const [priceLoad, setPriceLoad] = useState(false)
     const [loading, setLoading] = useState(false);
     const [cartItems, setCartItems] = useState([])
     const [cartData, setCartData] = useState({});
-    const [cartId, setCartId] = useState('');
-    const [shippingSubdivision, setShippingSubdivision] = useState(states[0]?.id)
-    const [shippingCountry, setShippingCountry] = useState(countries[0]?.id)
+    const [shippingSubdivision, setShippingSubdivision] = useState(states[0]?.id || '')
+    const [shippingCountry, setShippingCountry] = useState(countries[0]?.id || '')
     const [cartShippingOption, setCartShippingOption] = useState('')
 
 
@@ -34,37 +33,47 @@ const CheckoutPage = props => {
         history.push('/home')
     }
 
+    // useEffect(() => {
+    //     let mounted = true
+    //     setLoading(true)
+
+
+    //     const fetchCart = async () => {
+    //         try {
+    //             // await fetchShippingSubdivisions()
+    //             setCartItems(cart.line_items)
+    //             console.log('triggered in fetch cart useEffect')
+    //             if (cart?.line_items?.length !== 0) {
+
+    //                 setCartData(checkoutToken.live)
+    //                 setCartId(cart.id)
+    //                 console.log('triggered if cart is empty')
+    //             }
+    //         } catch (err) {
+
+    //         } finally {
+    //             setLoading(false)
+    //         }
+    //     }
+    //     fetchCart()
+    //     if (mounted) fetchCart()
+    //     return () => {
+    //         mounted = false;
+    //     }
+
+
+    // }, [cart]);
+
+
+    // I need to work on taxes and shipping and getting it integrated with discounts. fuck me
+
     useEffect(() => {
-        let mounted = true
-        setLoading(true)
-
-
-        const fetchCart = async () => {
-            try {
-                // await fetchShippingSubdivisions()
-                setCartItems(cart.line_items)
-                console.log('triggered in fetch cart useEffect')
-                if (cart?.line_items?.length !== 0) {
-
-                    setCartData(checkoutToken.live)
-                    setCartId(cart.id)
-                    console.log('triggered if cart is empty')
-                }
-            } catch (err) {
-
-            } finally {
-                setLoading(false)
-            }
+        const initializeCheckoutToken = async (cartId) => {
+            await getCheckoutToken(cartId)
         }
-        fetchCart()
-        if (mounted) fetchCart()
-        return () => {
-            mounted = false;
-        }
+        initializeCheckoutToken(cart?.id)
 
-
-    }, [cart]);
-
+    }, [])
 
 
     useEffect(() => {
@@ -77,7 +86,7 @@ const CheckoutPage = props => {
                     if (cart?.line_items?.length === 0 || cart === undefined) {
                         setCheckoutTokenToEmpty()
                     } else {
-                        await getCheckoutToken(cart?.id)
+                        await fetchLiveCheckoutToken(checkoutToken?.id)
                     }
                     setCartData(checkoutToken?.live)
                 } catch (err) {
@@ -97,12 +106,16 @@ const CheckoutPage = props => {
     }, [cart])
 
 
+
     const styles = {
 
 
         loadingDiv: {
             height: '80vh'
         },
+        container: {
+            minHeight: '80vh'
+        }
 
     }
 
@@ -137,7 +150,7 @@ const CheckoutPage = props => {
     }
 
 
-    const handleFormSubmit = (data, errorHandler) => {
+    const handleFormSubmit = async (data, errorHandler) => {
         console.log(data, 'form state')
         if (data.shippingCountry === undefined || data.cartShippingOption === undefined || data.shippingSubdivision === undefined) {
             console.log('the form is missing fields')
@@ -146,11 +159,18 @@ const CheckoutPage = props => {
                 , 3000)
             return false
         } else {
-            setCheckoutForm(data)
-            history.push('/paymentreview')
+            try {
+                await setCheckoutForm(data)
+                await history.push('/paymentreview')
+            } catch (err) {
+                console.error(err)
+            }
+
+
 
         }
     }
+
 
 
 
@@ -169,7 +189,6 @@ const CheckoutPage = props => {
                         routeToHomePage={routeToHomePage}
                         handleUpdateQuantity={handleUpdateQuantity}
                         handleRemoveItem={removeItem}
-                        cartId={cartId}
                         priceLoad={priceLoad}
                         setPriceLoad={setPriceLoad}
                         lastUpdated={cart.updated}

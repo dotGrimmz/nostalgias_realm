@@ -28,6 +28,7 @@ class ContextImplementation extends Component {
         } catch (err) {
             console.error(err)
         }
+
     }
 
     addToCart = async (id, quantity) => {
@@ -47,35 +48,19 @@ class ContextImplementation extends Component {
         const { data } = await service.fetchFeaturedProducts()
 
         this.setState({ featuredProducts: data })
-        console.log('featured products completed')
 
     }
 
     fetchProducts = async () => {
         const { data } = await service.fetchAllProducts();
         this.setState({ products: data })
-        console.log('products completed')
-
-
     }
 
     initializeCart = async () => {
-
-
         try {
             let cart = await service.getCart();
-
             this.setState({ cart: cart })
-            if (cart.line_items.length > 0) {
-
-                let token = await this.getCheckoutToken(cart?.id)
-                console.log(token, 'should be the token in initalize cart')
-                if (token !== undefined) this.setState({ checkoutToken: token })
-
-            }
-
             window.sessionStorage.setItem('cart', cart)
-            console.log('fetching cart complete after initialization')
         } catch (err) {
             console.error(err)
         }
@@ -83,6 +68,7 @@ class ContextImplementation extends Component {
     }
 
     handleUpdateCart = async (id, quantity) => {
+
         try {
             let updatedCart = await service.updateCart(id, quantity)
             this.setState({ cart: updatedCart.cart })
@@ -119,7 +105,7 @@ class ContextImplementation extends Component {
     clearCart = async () => {
         try {
             let res = await service.emptyCart()
-            this.setState({ cart: res.cart, cartTotal: res.cart.total_items, checkoutToken: {} })
+            this.setState({ cart: res.cart, checkoutToken: {} })
 
 
         } catch (err) {
@@ -130,6 +116,21 @@ class ContextImplementation extends Component {
     handleDiscountCode = async (id, code) => {
         try {
             let res = await service.validateDiscount(id, code)
+            if (res.valid) {
+
+                // ill need this for later
+                // this.setState(prevState => ({
+                //     checkoutToken: {
+                //         ...prevState.checkoutToken,
+                //         live: res
+                //     }
+                // }))
+                return true
+                // await this.getCheckoutToken(this.checkoutToken?.id)
+            } else {
+                return false
+            }
+
             console.log(res, 'discount obj in context')
 
         } catch (err) {
@@ -203,7 +204,8 @@ class ContextImplementation extends Component {
 
     setCheckoutForm = data => {
         this.setState({ formData: data })
-        window.sessionStorage.setItem('formData', data)
+        if (!window.sessionStorage.getItem('formData')) window.sessionStorage.setItem('formData', JSON.stringify(data))
+
     }
 
     refreshCart = async () => {
@@ -218,17 +220,76 @@ class ContextImplementation extends Component {
     handleCaptureCheckout = async (id, order) => {
         try {
             let res = await service.captureCheckoutToken(id, order)
-            console.log(res, 'res from payment')
+            console.log(res.status, 'res from payment')
 
             // I have no idea why this is reloading my page much less what the fuck is happening when I hit submit on the damn form
             this.setState({ order: res })
             this.refreshCart()
-            console.log(res, 'cap[tured checkout from the context')
+            return true
         } catch (err) {
             console.error(err)
+            if (err.statusCode === 422) {
+                this.setState({ errorMessage: 'Quantity of Item Not Availible' })
+
+            } else {
+                this.setState({ errorMessage: err.data.error.message })
+            }
+            return false
+        }
+    }
+
+    handleValidateQuantity = async (checkoutId, lineItemId, quantity) => {
+        try {
+            let res = await service.validateQuantity(checkoutId, lineItemId, quantity)
+            return res
+            console.log(res, 'enough quantity')
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    fetchLiveCheckoutToken = async (checkoutId) => {
+        try {
+            let res = await service.getCheckoutTokenLive(checkoutId)
+            this.setState(prevState => ({
+                checkoutToken: {
+                    ...prevState.checkoutToken,
+                    live: res
+                }
+            }))
+            console.log(res, 'res after fetching live token')
+        } catch (err) {
             this.setState({ errorMessage: err.data.error.message })
         }
     }
+
+    handleTaxInfo = async (checkoutId, region, zipcode) => {
+        try {
+            let res = await service.getTaxInfo(checkoutId, region, zipcode)
+            console.log(res, 'tax info in context')
+            this.setState(prevState => ({
+                checkoutToken: {
+                    ...prevState.checkoutToken,
+                    live: res.live
+                }
+            }))
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    fetchIPAddress = async () => {
+        try {
+            let res = await service.getIPAddress()
+            return { region: res.data.location.region, postal_zip_code: res.data.location.postalCode }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+
+
+
 
 
     state = {
@@ -244,7 +305,6 @@ class ContextImplementation extends Component {
         errorMessage: '',
         initializeCart: this.initializeCart,
         addToCart: this.addToCart,
-        cartTotal: 0,
         handleUpdateCart: this.handleUpdateCart,
         cleartCart: this.clearCart,
         handleDiscountCode: this.handleDiscountCode,
@@ -258,7 +318,11 @@ class ContextImplementation extends Component {
         handleRemoveItem: this.handleRemoveItem,
         setCheckoutTokenToEmpty: this.setCheckoutTokenToEmpty,
         setCheckoutForm: this.setCheckoutForm,
-        handleCaptureCheckout: this.handleCaptureCheckout
+        handleCaptureCheckout: this.handleCaptureCheckout,
+        handleValidateQuantity: this.handleValidateQuantity,
+        fetchLiveCheckoutToken: this.fetchLiveCheckoutToken,
+        handleTaxInfo: this.handleTaxInfo,
+        fetchIPAddress: this.fetchIPAddress
     }
 
 

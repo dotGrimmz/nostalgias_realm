@@ -1,4 +1,6 @@
 import Commerce from '@chec/commerce.js';
+import axios from "axios";
+
 
 class CommerceService {
     constructor() {
@@ -81,6 +83,31 @@ class CommerceService {
 
     refreshCart() {
         return this.instance.cart.refresh()
+    }
+
+    validateQuantity(checkoutId, itemId, quantity) {
+        return this.instance.checkout.checkQuantity(checkoutId, itemId, {
+            amount: quantity
+        })
+    }
+
+    getCheckoutTokenLive(tokenId) {
+        return this.instance.checkout.getLive(tokenId)
+    }
+
+    // use geolocation to get initial city and fetch taxes and shipping
+
+    getTaxInfo(checkoutTokenId, region, zipcode) {
+        console.log(checkoutTokenId, 'checkout id in service')
+        return this.instance.checkout.setTaxZone(checkoutTokenId, {
+            country: 'US',
+            region: region,
+            postal_zip_code: zipcode,
+        })
+    }
+
+    getIPAddress() {
+        return axios.get('https://geo.ipify.org/api/v1?apiKey=at_gw1kf2uBArYqTeRFwEHZgsYWkxGDt')
     }
 
 }

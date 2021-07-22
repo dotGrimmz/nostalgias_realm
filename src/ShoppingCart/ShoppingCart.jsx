@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useMemo } from 'react'
+import React, { useContext, useState } from 'react'
 import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
@@ -14,6 +14,11 @@ import CartItem from './CartItem';
 import gengar from '../images/gengar.jpg';
 import { makeStyles } from '@material-ui/core/styles';
 import { CardContent, Typography } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
+
+
+
+
 
 const useStyles = makeStyles({
     shopBtn: {
@@ -62,11 +67,12 @@ const useStyles = makeStyles({
 
 const ShoppingCart = React.memo((props) => {
     const context = useContext(DDTContext);
-    const { cleartCart, handleDiscountCode, cart, checkoutToken } = context;
-    const { routeToHomePage, handleUpdateQuantity, handleRemoveItem, cartId, priceLoad } = props;
+    const { cleartCart, handleDiscountCode, cart, checkoutToken, fetchLiveCheckoutToken, handleTaxInfo } = context;
+    const { routeToHomePage, handleUpdateQuantity, handleRemoveItem, priceLoad } = props;
 
     const [discount, setDiscount] = useState('');
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
 
 
 
@@ -99,12 +105,23 @@ const ShoppingCart = React.memo((props) => {
         }
     }
 
+    const checkDiscount = async () => {
+        let isValid = await handleDiscountCode(checkoutToken.id, discount);
+
+        if (isValid) {
+            await fetchLiveCheckoutToken(checkoutToken.id)
+
+        } else {
+            enqueueSnackbar('Invalid Discount Code', { variant: 'error' });
+
+        }
+    }
 
 
 
     return (
         <Paper style={styles.container}  >
-            <Grid container justify='center' spacing={2} >
+            <Grid container justify='center' spacing={2} alignItems='center' >
                 {cart?.line_items?.length > 0 && cart?.line_items?.map((x) => (
                     <Grid key={x.id} item xs={12} align='center' style={styles.cartItem}>
                         <CartItem name={x.name}
@@ -135,7 +152,7 @@ const ShoppingCart = React.memo((props) => {
                 <Grid item xs={2} align='center' >
                     <IconButton variant='contained'
                         classes={{ root: classes.updateBtn }}
-                        onClick={() => handleDiscountCode(cartId, discount)}
+                        onClick={() => checkDiscount()}
                     >
                         Apply
                     </IconButton>
@@ -149,17 +166,20 @@ const ShoppingCart = React.memo((props) => {
                 <Grid item xs={12} style={styles.divider}>
                     <Divider variant='middle' />
                 </Grid>
+                {checkoutToken?.live?.discount?.code && <Grid item xs={12} md={6} style={{ alignSelf: 'center', padding: '3%' }}>
+                    <h4 style={{ color: 'lightgreen' }}>You Saved {checkoutToken.live.discount.amount_saved.formatted_with_symbol} with Discount Code {checkoutToken.live.discount.code}</h4>
+                </Grid>}
                 <Grid item xs={12} md={6} style={{ alignSelf: 'center', padding: '3%' }}>
-                    <Button onClick={() => routeToHomePage()} fullWidth classes={{ root: classes.shopBtn }} variant='contained' color='primary'>
-                        Check Out
+                    <Button onClick={() => handleTaxInfo(checkoutToken.id)} fullWidth classes={{ root: classes.shopBtn }} variant='contained' color='primary'>
+                        I need a few more things..
                     </Button>
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} alignItems='center'>
                     <Card raised classes={{ root: classes.cardContainer }} >
                         {priceLoad && <div ><div style={{ padding: '3%' }} className="text-center section-space"><CircularProgress color='secondary' /></div>
                         </div>
                         }
-                        {!priceLoad && <CardContent  >
+                        {!priceLoad && <CardContent>
                             <Grid container justify='space-between' style={{ backgroundColor: 'transparent', }} >
                                 <Grid item xs={6} align='left'  >
                                     <Typography variant='h5' style={{ width: '35%' }} >Subtotal</Typography>
