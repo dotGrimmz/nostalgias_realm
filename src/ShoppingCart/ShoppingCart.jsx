@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react'
 import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
-import brees from '../images/breescard.jpeg';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import DDTContext from '../context/DDContext';
 import IconButton from '@material-ui/core/IconButton';
@@ -68,7 +67,7 @@ const useStyles = makeStyles({
 const ShoppingCart = React.memo((props) => {
     const context = useContext(DDTContext);
     const { cleartCart, handleDiscountCode, cart, checkoutToken, fetchLiveCheckoutToken, handleTaxInfo } = context;
-    const { routeToHomePage, handleUpdateQuantity, handleRemoveItem, priceLoad } = props;
+    const { handleUpdateQuantity, handleRemoveItem, priceLoad } = props;
 
     const [discount, setDiscount] = useState('');
     const classes = useStyles();
@@ -82,8 +81,6 @@ const ShoppingCart = React.memo((props) => {
             minWidth: '75%',
             padding: '1%',
             backgroundColor: 'grey',
-
-
         },
         cartItem: {
             padding: '1%'
@@ -116,6 +113,57 @@ const ShoppingCart = React.memo((props) => {
 
         }
     }
+
+    // const momoizedCart = useMemo(({ cart }) => {
+
+    //     const cartState = { ...cart }
+    //     return cartState;
+
+    // }, (prevProps, nextProps) => {
+    //     console.log(prevProps, 'prev props', 'next props', nextProps)
+    //     if (prevProps.cart.subtotal.formatted !== nextProps.cart.subtotal.formatted) {
+    //         return true
+    //     }
+    //     return false
+    // })
+
+    // const memoizedCart = React.memo(() => {
+    //     console.log(cart, 'cart in the use')
+    //     return cart
+    // }, (prevProps, nextProps) => {
+    //     console.log(prevProps, 'prev props')
+    //     if (prevProps.cart.subtotal.formatted !== nextProps.cart.subtotal.formatted) {
+    //         return true
+    //     }
+    //     return false
+    // });
+
+
+
+
+
+    // useEffect(() => {
+    //     const fetchTaxes = async (cartId) => {
+    //         let location = await fetchIPAddress()
+    //         console.log('ip address fetched');
+
+    //         let abbv = states?.find(x => x.label === location?.region)
+    //         if (cartId !== undefined) {
+    //             await handleTaxInfo(cartId, abbv?.id, location?.postal_zip_code)
+    //             console.log(cartId, 'triggers if cart id in layout isnt undefined -> getting tax info')
+    //         } else {
+
+    //         }
+    //         // console.log('tax info fetched')
+    //     }
+
+    //     fetchTaxes(checkoutToken?.id)
+
+    // }, [memoizedCart?.subtotal?.formatted])
+
+
+
+
 
 
 
@@ -181,24 +229,7 @@ const ShoppingCart = React.memo((props) => {
                         }
                         {!priceLoad && <CardContent>
                             <Grid container justify='space-between' style={{ backgroundColor: 'transparent', }} >
-                                <Grid item xs={6} align='left'  >
-                                    <Typography variant='h5' style={{ width: '35%' }} >Subtotal</Typography>
-                                </Grid>
-                                <Grid item xs={6} align="right" >
-                                    <Typography style={{ width: '30%' }} variant='h6'>{checkoutToken?.live?.subtotal?.formatted_with_symbol}</Typography>
-                                </Grid>
-                                <Grid item xs={6} align='left'>
-                                    <Typography variant='h5' >Tax</Typography>
-                                </Grid>
-                                <Grid item xs={6} align="right">
-                                    <Typography style={{ width: '30%' }} variant='h6'>{checkoutToken?.live?.tax?.amount?.formatted_with_symbol}</Typography >
-                                </Grid>
-                                <Grid item xs={6} align='left'>
-                                    <Typography variant='h5' style={{ width: '35%' }} >Shipping</Typography>
-                                </Grid>
-                                <Grid item xs={6} align="right">
-                                    <Typography style={{ width: '30%' }} variant='h6'>{checkoutToken?.live?.shipping?.price?.formatted_with_symbol}</Typography >
-                                </Grid>
+
                                 <Grid item xs={6} align='left'>
                                     <Typography variant='h5' style={{ width: '35%' }} >Discount</Typography>
                                 </Grid>
@@ -209,10 +240,10 @@ const ShoppingCart = React.memo((props) => {
                                     <Divider variant='middle' />
                                 </Grid>
                                 <Grid item xs={6} align='left'>
-                                    <Typography variant='h5' style={{ width: '55%' }} >Total Amount</Typography>
+                                    <Typography variant='h5' style={{ width: '55%' }} >Subtotal</Typography>
                                 </Grid>
                                 <Grid item xs={6} align="right">
-                                    <Typography style={{ width: '30%' }} variant='h6'>{checkoutToken?.live?.total_with_tax?.formatted_with_symbol}</Typography >
+                                    <Typography style={{ width: '40%' }} variant='h4'>{cart?.subtotal?.formatted_with_symbol}</Typography >
                                 </Grid>
                             </Grid>
                         </CardContent>}

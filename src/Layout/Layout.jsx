@@ -8,7 +8,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 const Layout = (props) => {
     const context = useContext(DDContext);
-    const { cart, fetchFeaturedProducts, fetchProducts, initializeCart, fetchIPAddress, checkoutToken, handleTaxInfo, states, getCheckoutToken } = context;
+    const { cart, fetchFeaturedProducts, fetchProducts, initializeCart } = context;
     const { children, history } = props;
     const [loading, setLoading] = useState(false)
 
@@ -16,7 +16,7 @@ const Layout = (props) => {
 
 
         loadingDiv: {
-            height: '80vh'
+            height: '90vh'
         },
         container: {
             minHeight: '80vh'
@@ -36,7 +36,7 @@ const Layout = (props) => {
     useEffect(() => {
         let mounted = true
         setLoading(true)
-        const handleLoadhandleLoad = async (cartId) => {
+        const handleLoad = async () => {
             if (mounted) {
                 try {
                     await initializeCart();
@@ -44,12 +44,12 @@ const Layout = (props) => {
 
 
 
-                    // initialize checkout token
                     await fetchFeaturedProducts();
                     console.log('featured products completed');
 
                     await fetchProducts();
-                    console.log('products completed')
+                    console.log('products completed');
+
 
                 } catch (err) {
                     console.error(err)
@@ -59,20 +59,24 @@ const Layout = (props) => {
 
             }
         }
-        if (mounted) handleLoadhandleLoad()
+        if (mounted) handleLoad()
         return () => {
             mounted = false
+
         }
+
     }, []);
 
-    // handle the geo location shit
-    useEffect(async () => {
-        let location = await fetchIPAddress()
-        let abbv = states?.find(x => x.label === location.region)
-        await handleTaxInfo(checkoutToken?.id, abbv?.id, location?.postal_zip_code)
-        console.log('tax info loaded')
 
-    }, [])
+
+    // handle the geo location shit
+    // useEffect(async () => {
+    //     let location = await fetchIPAddress()
+    //     let abbv = states?.find(x => x.label === location.region)
+    //     await handleTaxInfo(checkoutToken?.id, abbv?.id, location?.postal_zip_code)
+    //     console.log('tax info loaded')
+
+    // }, [])
 
 
 

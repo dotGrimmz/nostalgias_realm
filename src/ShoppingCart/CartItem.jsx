@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext } from 'react'
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Slide from '@material-ui/core/Slide';
@@ -9,8 +9,6 @@ import RemoveCircleOutlinedIcon from '@material-ui/icons/RemoveCircleOutlined';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ToolTip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel';
-import Button from '@material-ui/core/Button';
-import CommerceService from '../service/CommerceService';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -41,12 +39,10 @@ const useStyles = makeStyles({
     }
 
 });
-const service = new CommerceService()
 
 const CartItem = (props) => {
 
-    const { name, image, price, id, quantity, handleUpdateQuantity, productId } = props;
-    const [loading, setLoading] = useState(false)
+    const { name, image, price, id, quantity, handleUpdateQuantity } = props;
 
 
     const context = useContext(DDTContext);
@@ -79,7 +75,7 @@ const CartItem = (props) => {
 
 
     return (
-        <Slide direction='up' timeout={{ enter: 200 }} in={!loading}  >
+        <Slide direction='up' timeout={{ enter: 900 }} in  >
 
             <Card style={styles.container} raised >
 

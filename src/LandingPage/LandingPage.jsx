@@ -2,13 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import FeaturedItemSection from '../FeaturedItemSection/FeaturedItemSection.jsx';
 import CatalogSection from '../CatalogSection/CatalogSection.jsx';
 import LandingPageHeader from '../components/Headers/LandingPageHeader';
-import CommerceService from '../service/CommerceService';
 import DDTContext from '../context/DDContext';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 
 
-const service = new CommerceService();
 
 const LandingPage = props => {
     const { history } = props;

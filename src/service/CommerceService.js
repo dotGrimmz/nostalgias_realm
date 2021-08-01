@@ -97,7 +97,7 @@ class CommerceService {
 
     // use geolocation to get initial city and fetch taxes and shipping
 
-    getTaxInfo(checkoutTokenId, region, zipcode) {
+    getTaxInfo(checkoutTokenId, region = "GA", zipcode = "30080") {
         console.log(checkoutTokenId, 'checkout id in service')
         return this.instance.checkout.setTaxZone(checkoutTokenId, {
             country: 'US',

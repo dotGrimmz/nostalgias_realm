@@ -3,15 +3,13 @@ import Container from '@material-ui/core/Container';
 import Carousel from 'react-material-ui-carousel'
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import CommerceService from '../service/CommerceService';
 import DDTContext from '../context/DDContext';
 import CatalogItem from '../CatalogSection/CatalogItem';
 import { useSnackbar } from 'notistack';
 import LinearProgress from '@material-ui/core/LinearProgress';
+
 
 
 
@@ -28,7 +26,6 @@ const useStyles = makeStyles({
     },
 
 });
-const service = new CommerceService();
 
 const CatalogItemPage = props => {
     const { match, history } = props;
@@ -37,17 +34,14 @@ const CatalogItemPage = props => {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const { addToCart, cart, handleUpdateCart, fetchSelectedProduct } = context;
+    const { addToCart, fetchSelectedProduct } = context;
 
 
 
-    const [quantity, setQuantity] = useState(1);
     const [price, setPrice] = useState("");
-    const [cardCount, setCardCount] = useState();
     const [imageArr, setImageArr] = useState([])
     const [name, setName] = useState("")
     const [loading, setLoading] = useState(false)
-    const [originalPrice, setOriginalPrice] = useState()
     const [description, setDescription] = useState('')
     const [suggestions, setSuggestions] = useState([]);
 
@@ -78,8 +72,6 @@ const CatalogItemPage = props => {
                 setLoading(true)
                 let res = await fetchSelectedProduct(match.params.id);
                 setPrice(res.price.formatted);
-                setOriginalPrice(res.price.raw)
-                setCardCount(res.inventory.available);
                 setImageArr(res.assets)
                 setName(res.name)
                 setDescription(res.description)
@@ -96,7 +88,9 @@ const CatalogItemPage = props => {
         return () => {
             mounted = false
         }
-    }, [match.params.id])
+
+        // fetch selected producted was not here before clean up
+    }, [match.params.id, fetchSelectedProduct])
 
 
 
@@ -170,7 +164,7 @@ const CatalogItemPage = props => {
                             <Grid item xs={12} align='center'>
                                 <Button
                                     fullWidth
-                                    onClick={() => handleAddToCart(match.params.id, quantity)}
+                                    onClick={() => handleAddToCart(match.params.id, 1)}
                                     variant='contained'
                                     color='primary'
                                     size='large'

@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react'
-import CommerceService from '../service/CommerceService';
 import DDTContext from '../context/DDContext';
 import ShoppingCart from '../ShoppingCart/ShoppingCart.jsx';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -8,21 +7,19 @@ import { useSnackbar } from 'notistack';
 import CheckoutForm from './CheckoutForm';
 
 
-const service = new CommerceService();
 
 
 const CheckoutPage = props => {
     const { history } = props;
     const context = useContext(DDTContext);
     const { cart, handleUpdateCart, setCheckoutForm,
-        checkoutToken, countries, handleRemoveItem, fetchLiveCheckoutToken,
-        setCheckoutTokenToEmpty, states, getCheckoutToken } = context;
+        checkoutToken, countries, handleRemoveItem,
+        states, getCheckoutToken } = context;
     const { enqueueSnackbar } = useSnackbar();
 
     const [priceLoad, setPriceLoad] = useState(false)
     const [loading, setLoading] = useState(false);
     const [cartItems, setCartItems] = useState([])
-    const [cartData, setCartData] = useState({});
     const [shippingSubdivision, setShippingSubdivision] = useState(states[0]?.id || '')
     const [shippingCountry, setShippingCountry] = useState(countries[0]?.id || '')
     const [cartShippingOption, setCartShippingOption] = useState('')
@@ -65,7 +62,6 @@ const CheckoutPage = props => {
     // }, [cart]);
 
 
-    // I need to work on taxes and shipping and getting it integrated with discounts. fuck me
 
     useEffect(() => {
         const initializeCheckoutToken = async (cartId) => {
@@ -73,37 +69,38 @@ const CheckoutPage = props => {
         }
         initializeCheckoutToken(cart?.id)
 
-    }, [])
-
-
-    useEffect(() => {
-        let mounted = true;
-        setPriceLoad(true)
-        setLoading(true)
-        const handleUpdateToken = async () => {
-            if (mounted) {
-                try {
-                    if (cart?.line_items?.length === 0 || cart === undefined) {
-                        setCheckoutTokenToEmpty()
-                    } else {
-                        await fetchLiveCheckoutToken(checkoutToken?.id)
-                    }
-                    setCartData(checkoutToken?.live)
-                } catch (err) {
-                    console.error(err)
-                } finally {
-                    setPriceLoad(false)
-                    setLoading(false)
-
-                }
-            }
-        }
-
-        if (mounted) handleUpdateToken()
-        return () => {
-            mounted = false
-        }
     }, [cart])
+
+
+    // useEffect(() => {
+    //     let mounted = true;
+    //     setPriceLoad(true)
+    //     setLoading(true)
+    //     const handleUpdateToken = async () => {
+    //         if (mounted) {
+    //             try {
+    //                 if (cart?.line_items?.length === 0 || cart === undefined) {
+    //                     setCheckoutTokenToEmpty()
+    //                 } else {
+    //                     await fetchLiveCheckoutToken(checkoutToken?.id)
+    //                     console.log('fetching live checkout token if cart is modified with', checkoutToken?.id)
+    //                 }
+    //                 setCartData(checkoutToken?.live)
+    //             } catch (err) {
+    //                 console.error(err)
+    //             } finally {
+    //                 setPriceLoad(false)
+    //                 setLoading(false)
+
+    //             }
+    //         }
+    //     }
+
+    //     if (mounted) handleUpdateToken()
+    //     return () => {
+    //         mounted = false
+    //     }
+    // }, [cart])
 
 
 
@@ -152,6 +149,7 @@ const CheckoutPage = props => {
 
     const handleFormSubmit = async (data, errorHandler) => {
         console.log(data, 'form state')
+        console.log()
         if (data.shippingCountry === undefined || data.cartShippingOption === undefined || data.shippingSubdivision === undefined) {
             console.log('the form is missing fields')
             errorHandler(true);
@@ -161,6 +159,10 @@ const CheckoutPage = props => {
         } else {
             try {
                 await setCheckoutForm(data)
+                console.log('set checkout form method complete')
+
+
+
                 await history.push('/paymentreview')
             } catch (err) {
                 console.error(err)
@@ -170,6 +172,25 @@ const CheckoutPage = props => {
 
         }
     }
+
+
+    // useEffect(() => {
+    // this useEffect is to refresh the checkout token anytime something is updated on the shopping cart page
+    // adding/ removing items
+
+    // let price = checkoutToken.live.tota_due.raw
+    //     const handleUpdateLiveCheckoutToken = async (checkoutTokenID) => {
+    //         if (checkoutTokenID !== undefined) {
+    //             await fetchLiveCheckoutToken(checkoutToken?.id)
+    //             console.log(checkoutToken, 'CHECKOUT TOKEN is VALID to fetch live TOKEN')
+    //         } else {
+    //             console.log('CHECKOUT TOKEN still UNDEFINED after the cart has been updated')
+    //         }
+    //     }
+
+    //     if (cart?.subtotal?.raw !== undefined || cart?.subtotal?.raw !== null) handleUpdateLiveCheckoutToken(checkoutToken.id)
+
+    // }, [cart])
 
 
 
@@ -185,7 +206,6 @@ const CheckoutPage = props => {
                     <h1 className='title text-center'> Shopping Cart</h1>
                     <ShoppingCart
                         cartItems={cartItems}
-                        cartData={cartData}
                         routeToHomePage={routeToHomePage}
                         handleUpdateQuantity={handleUpdateQuantity}
                         handleRemoveItem={removeItem}

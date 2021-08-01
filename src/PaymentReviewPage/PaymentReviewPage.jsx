@@ -5,7 +5,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Container from '@material-ui/core/Container';
 import DDContext from '../context/DDContext';
 import Divider from '@material-ui/core/Divider';
-import { useForm } from "react-hook-form";
 import { ElementsConsumer, CardElement } from '@stripe/react-stripe-js';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,14 +29,13 @@ const useStyles = makeStyles({
 const PaymentReviewPage = props => {
     const [loading, setLoading] = useState(false);
     const [paymentLoad, setPaymentLoad] = useState(false);
+
     const context = useContext(DDContext);
     const classes = useStyles();
 
-    const { history } = props;
     const { enqueueSnackbar } = useSnackbar();
 
-    const { cart, formData, checkoutToken, handleCaptureCheckout, setCheckoutForm, errorMessage } = context;
-    const { register, getValues } = useForm()
+    const { cart, formData, checkoutToken, handleCaptureCheckout, handleTaxInfo, getCheckoutToken, setCheckoutForm, errorMessage } = context;
 
 
     const styles = {
@@ -60,7 +58,6 @@ const PaymentReviewPage = props => {
     }
 
 
-
     const cardStyle = {
         style: {
             base: {
@@ -80,6 +77,37 @@ const PaymentReviewPage = props => {
     };
 
     // console.log(formData, 'form data')
+
+    useEffect(() => {
+        const loadTaxes = async (checkoutId, city, zipcode) => {
+            await handleTaxInfo(checkoutId, city, zipcode)
+
+        }
+        loadTaxes(checkoutToken.id, formData.shippingSubdivision, formData.zipCode)
+
+    }, [])
+    useEffect(() => {
+        setLoading(true)
+        const loadCheckoutToken = async (checkoutId) => {
+            try {
+                await getCheckoutToken(checkoutId)
+
+            } catch (err) {
+                console.error(err)
+            } finally {
+                setLoading(false)
+
+            }
+
+        }
+
+        loadCheckoutToken(cart.id)
+
+    }, [])
+
+
+
+
 
     useEffect(() => {
         let data = window.sessionStorage.getItem('formData')

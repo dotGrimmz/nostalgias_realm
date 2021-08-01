@@ -13,7 +13,7 @@ import Divider from '@material-ui/core/Divider';
 // core components
 
 function LandingPageHeader(props) {
-  const { banner, checkout } = props;
+  const { banner } = props;
   let pageHeader = React.createRef();
   React.useEffect(() => {
     if (window.innerWidth > 991) {

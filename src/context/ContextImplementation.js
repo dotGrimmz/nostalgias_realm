@@ -72,10 +72,10 @@ class ContextImplementation extends Component {
         try {
             let updatedCart = await service.updateCart(id, quantity)
             this.setState({ cart: updatedCart.cart })
-            if (updatedCart.total_items > 0) {
-                let token = await this.getCheckoutToken(updatedCart.id)
-                this.setState({ checkoutToken: token })
-            }
+            // if (updatedCart.total_items > 0) {
+            //     let token = await this.getCheckoutToken(updatedCart.id)
+            //     this.setState({ checkoutToken: token })
+            // }
         } catch (err) {
             console.error(err)
         }
@@ -87,15 +87,15 @@ class ContextImplementation extends Component {
             console.log(cart.cart, 'delete res')
             this.setState({ cart: cart.cart })
             console.log(this.cart, 'cart')
-            if (cart?.total_items?.length > 0) {
-                let token = await this.getCheckoutToken(cart.id)
+            // if (cart?.total_items?.length > 0) {
+            //     let token = await this.getCheckoutToken(cart.id)
 
-                this.setState({ checkoutToken: token })
+            //     this.setState({ checkoutToken: token })
 
-            } else {
-                console.log('cart reset triggered')
-                this.setState({ checkoutToken: {} })
-            }
+            // } else {
+            //     console.log('cart reset triggered')
+            //     this.setState({ checkoutToken: {} })
+            // }
         } catch (err) {
             console.error(err)
 
@@ -249,6 +249,9 @@ class ContextImplementation extends Component {
     }
 
     fetchLiveCheckoutToken = async (checkoutId) => {
+
+
+        //something in here is not triggering .. figure it out.. its whats preventing the cart from being updated
         try {
             let res = await service.getCheckoutTokenLive(checkoutId)
             this.setState(prevState => ({
@@ -257,22 +260,23 @@ class ContextImplementation extends Component {
                     live: res
                 }
             }))
-            console.log(res, 'res after fetching live token')
+            console.log(this.checkoutToken.live, 'res after fetching live token')
         } catch (err) {
-            this.setState({ errorMessage: err.data.error.message })
+            this.setState({ errorMessage: err?.data?.error?.message })
         }
     }
 
     handleTaxInfo = async (checkoutId, region, zipcode) => {
         try {
             let res = await service.getTaxInfo(checkoutId, region, zipcode)
-            console.log(res, 'tax info in context')
+            console.log(res.live, 'tax info in context coming back from the service. match one')
             this.setState(prevState => ({
                 checkoutToken: {
                     ...prevState.checkoutToken,
                     live: res.live
                 }
             }))
+            console.log(this.state.checkoutToken.live, 'checkout token after tax info has been updated. match two')
         } catch (err) {
             console.error(err)
         }

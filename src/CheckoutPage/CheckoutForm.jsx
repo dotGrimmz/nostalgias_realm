@@ -9,13 +9,11 @@ import { ErrorMessage } from '@hookform/error-message';
 import MenuItem from '@material-ui/core/MenuItem';
 import DDContext from '../context/DDContext';
 import CustomTextField from './CustomTextField';
-import CommerceService from '../service/CommerceService'
 
-const service = new CommerceService()
 
 const CheckoutForm = props => {
     const methods = useForm();
-    const { getValues, register, formState: { errors } } = useForm();
+    const { register, formState: { errors } } = useForm();
 
     const context = useContext(DDContext);
     const { states, shippingOptions, fetchShippingCountries, checkoutToken, fetchShippingSubdivisions, countries, fetchShippingOptions } = context;
@@ -23,16 +21,17 @@ const CheckoutForm = props => {
 
     useEffect(() => {
         let mounted = true
-        const fetchCountries = async () => {
-            try {
-                await fetchShippingCountries(checkoutToken?.id)
-            } catch (err) {
-                console.error(err)
-            }
-        }
-
         if (mounted) {
-            fetchCountries()
+            fetchShippingCountries(checkoutToken?.id)
+        }
+        return () => {
+            mounted = false
+        }
+    }, [fetchShippingCountries, checkoutToken?.id])
+
+    useEffect(() => {
+        let mounted = true
+        if (mounted) {
             fetchShippingSubdivisions()
         }
         return () => {
