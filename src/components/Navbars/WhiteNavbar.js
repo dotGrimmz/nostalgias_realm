@@ -73,11 +73,11 @@ function WhiteNavbar(props) {
                   <p>BasketBall</p>
                 </DropdownToggle>
                 <DropdownMenu aria-labelledby="navbarDropdownMenuLink1" right>
-                  <DropdownItem to="/" tag={Link}>
+                  <DropdownItem to="/catelog/basketball/nba" tag={Link}>
                     <i className="now-ui-icons design_image"></i>
                     NBA
                   </DropdownItem>
-                  <DropdownItem to="/index" tag={Link}>
+                  <DropdownItem to="/catelog/basketball/ncaa" tag={Link}>
                     <i className="now-ui-icons business_chart-pie-36"></i>
                     NCAA
                   </DropdownItem>
@@ -101,11 +101,11 @@ function WhiteNavbar(props) {
                   <p>Football</p>
                 </DropdownToggle>
                 <DropdownMenu aria-labelledby="navbarDropdownMenuLink" right>
-                  <DropdownItem to="/sections#headers" tag={Link}>
+                  <DropdownItem to="/catelog/football/nfl" tag={Link}>
                     <i className="now-ui-icons shopping_box"></i>
                     NFL
                   </DropdownItem>
-                  <DropdownItem to="/sections#features" tag={Link}>
+                  <DropdownItem to="/catelog/football/ncaa" tag={Link}>
                     <i className="now-ui-icons ui-2_settings-90"></i>
                     NCAA
                   </DropdownItem>
@@ -130,15 +130,15 @@ function WhiteNavbar(props) {
                   <p>Baseball</p>
                 </DropdownToggle>
                 <DropdownMenu aria-labelledby="navbarDropdownMenuLink" right>
-                  <DropdownItem to="/sections#headers" tag={Link}>
+                  <DropdownItem to="/catelog/baseball/mlb" tag={Link}>
                     <i className="now-ui-icons shopping_box"></i>
                     MLB
                   </DropdownItem>
-                  <DropdownItem to="/sections#features" tag={Link}>
+                  <DropdownItem to="/catelog/baseball/ncaa" tag={Link}>
                     <i className="now-ui-icons ui-2_settings-90"></i>
                     NCAA
                   </DropdownItem>
-                  <DropdownItem to="/sections#features" tag={Link}>
+                  <DropdownItem to="/catelog/baseball/highschool" tag={Link}>
                     <i className="now-ui-icons ui-2_settings-90"></i>
                     High School
                   </DropdownItem>

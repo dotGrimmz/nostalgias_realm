@@ -90,13 +90,13 @@ const CatalogSection = (props) => {
                             } in={true}  >
                                 <Grid xs={12} md={4} item style={styles.catalogDisplay}>
                                     <CatalogItem
-                                        title={x.name}
-                                        description={x.description}
-                                        image={x.media.source}
-                                        price={x.price.formatted}
+                                        title={x?.name}
+                                        description={x?.description}
+                                        image={x?.media?.source}
+                                        price={x?.price?.formatted}
                                         allowDescription
-                                        id={x.id}
-                                        routeToItem={props.routeToItem}
+                                        id={x?.id}
+                                        routeToItem={props?.routeToItem}
                                         homePage
                                     />
 

@@ -19,6 +19,7 @@ import "assets/demo/nucleo-icons-page-styles.css?v=1.5.0";
 
 import Layout from './Layout/Layout';
 import LandingPage from './LandingPage/LandingPage';
+import CatalogPage from "CatalogPage/CatalogPage";
 import ContextImplementation from '../src/context/ContextImplementation';
 import CatalogItemPage from './CatalogItemPage/CatalogItemPage.jsx';
 import CheckoutPage from './CheckoutPage/CheckoutPage.jsx';
@@ -56,8 +57,12 @@ ReactDOM.render(
                 path="/paymentreview"
                 render={(props) => <PaymentReviewPage {...props} />}
               />
+               <Route
+                path="/catelog/:category/:level"
+                render={(props) => <CatalogPage {...props} />}
+              />
 
-              <Redirect to="/home" />
+              {/* <Redirect to="/home" /> */}
             </Switch>
           </Layout>
         </BrowserRouter>
