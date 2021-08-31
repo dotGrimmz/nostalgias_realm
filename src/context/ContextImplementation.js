@@ -152,7 +152,7 @@ class ContextImplementation extends Component {
         try {
             let res = await service.fetchShippingCountries(checkoutTokenId)
             console.log(res, 'res countries')
-            if (res.countries.length === 0) {
+            if (res?.countries?.length === 0) {
                 this.setState({ countries: { id: "US", label: "United States" } })
 
             } else {
