@@ -152,8 +152,15 @@ class ContextImplementation extends Component {
         try {
             let res = await service.fetchShippingCountries(checkoutTokenId)
             console.log(res, 'res countries')
-            const countries = Object.entries(res.countries).map(([code, name]) => ({ id: code, label: name }))
-            this.setState({ countries: countries })
+            if (res.countries.length === 0) {
+                this.setState({ countries: { id: "US", label: "United States" } })
+
+            } else {
+                const countries = Object.entries(res.countries).map(([code, name]) => ({ id: code, label: name }))
+
+                this.setState({ countries: countries })
+            }
+
             return res
         } catch (err) {
             console.error(err)
@@ -217,8 +224,8 @@ class ContextImplementation extends Component {
         }
     }
 
-    resetOrder =() => {
-        this.setState({order: {}})
+    resetOrder = () => {
+        this.setState({ order: {} })
     }
 
     handleCaptureCheckout = async (id, order) => {
