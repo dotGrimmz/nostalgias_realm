@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
 import DDContext from '../context/DDContext';
 import Divider from '@material-ui/core/Divider';
@@ -29,13 +30,14 @@ const useStyles = makeStyles({
 const PaymentReviewPage = props => {
     const [loading, setLoading] = useState(false);
     const [paymentLoad, setPaymentLoad] = useState(false);
+    const [paymentStatus, setPaymentStatus] = useState("Pending");
 
     const context = useContext(DDContext);
     const classes = useStyles();
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const { cart, formData, checkoutToken, handleCaptureCheckout, handleTaxInfo, getCheckoutToken, setCheckoutForm, errorMessage } = context;
+    const { cart, formData, checkoutToken, handleCaptureCheckout, handleTaxInfo, getCheckoutToken, setCheckoutForm, errorMessage, order, resetOrder } = context;
 
 
     const styles = {
@@ -53,7 +55,17 @@ const PaymentReviewPage = props => {
             border: '1px solid black',
             padding: '2%',
             backgroundColor: 'lightgrey'
+        },
+        customerInfoItem: {
+            padding: '.5%'
+        },
+        shippingCard: {
+            width: '80%'
+        },
+        grandTotal: {
+            paddingTop: "30%"
         }
+        
 
     }
 
@@ -98,11 +110,12 @@ const PaymentReviewPage = props => {
                 setLoading(false)
 
             }
-
         }
-
         loadCheckoutToken(cart.id)
-
+        return () => {
+            resetOrder()
+        }
+        
     }, [])
 
 
@@ -130,6 +143,7 @@ const PaymentReviewPage = props => {
         if (error) {
             console.error(error)
         } else {
+            setPaymentStatus("Processing")
             const orderData = {
                 line_item: checkoutToken.live.line_items,
                 customer: {
@@ -166,6 +180,11 @@ const PaymentReviewPage = props => {
             let res = await handleCaptureCheckout(checkoutToken.id, orderData)
             if (!res) {
                 enqueueSnackbar(errorMessage || 'There was an Error', { variant: 'error' });
+                setPaymentStatus("Error")
+            } else {
+                enqueueSnackbar("Order Complete!", { variant: 'Success' });
+
+                setPaymentStatus("Complete")
             }
         }
         setPaymentLoad(false)
@@ -184,31 +203,46 @@ const PaymentReviewPage = props => {
                     <Grid container alignItems='center' >
                         <Grid item xs={12} md={6}>
                             <Grid container spacing={4} >
-                                {cart?.line_items?.map(x => (
-                                    <Grid item xs={12} key={x.id} >
-                                        <Grid container alignItems='center'>
-                                            <Grid item xs={12} md={6} >
-                                                <Typography variant='h6' display='inline'>
-                                                    {x?.name}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={12} md={6} >
-                                                <Typography variant='body1'>
-                                                    ...{x?.line_total?.formatted_with_symbol}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={12} align='left'>
-                                                <Divider variant='middle' style={{ width: '55%' }} />
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                ))}
+                            {paymentStatus !== "Complete" && cart?.line_items?.map(x => (
+                <Grid item xs={12} key={x.id} >
+                    <Grid container alignItems='center'>
+                        <Grid item xs={12} md={6} >
+                            <Typography variant='h6' display='inline'>
+                                {x?.name}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6} >
+                            <Typography variant='body1'>
+                                ...{x?.line_total?.formatted_with_symbol}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} align='left'>
+                            <Divider variant='middle' style={{ width: '55%' }} />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            ))}
+               { paymentStatus === "Complete" && order?.line_items?.map(x => (
+                <Grid item xs={12} key={x.id} >
+                    <Grid container alignItems='center'>
+                        <Grid item xs={12} md={6} >
+                            <Typography variant='h6' display='inline'>
+                                {x?.product_name}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6} >
+                            <Typography variant='body1'>
+                                ...{x?.line_total?.formatted_with_symbol}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} align='left'>
+                            <Divider variant='middle' style={{ width: '55%' }} />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            ))}
                             </Grid>
                         </Grid>
-
-
-
-                        {/* swipe */}
                         <Grid item xs={12} md={6}>
                             <Grid container align='center' style={styles.stripeContainer}>
                                 <Grid item xs={12}>
@@ -235,56 +269,98 @@ const PaymentReviewPage = props => {
                             </Grid>
                         </Grid>
                     </Grid>
-
-
                     <Grid item xs={12} style={{ padding: '2%', margin: '2%', backgroundColor: 'lightgrey' }}>
                         <Grid container spacing={4}>
-                            <Grid item xs={12} md={6} >
+                            <Grid item xs={12} align='center' sm={6}>
+                            <Card style={styles.shippingCard}>
+                            <Grid item xs={12} md={6} style={styles.customerInfoItem}>
                                 <Typography variant='caption'>
                                     First Name:
-                                    </Typography> {formData.firstName}
+                                    </Typography> 
+                                    <h6>{formData.firstName.toUpperCase()}</h6>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={6} style={styles.customerInfoItem}>
                                 <Typography variant='caption'>
                                     Last Name:
-                                    </Typography> {formData.lastName}
+                                    </Typography> <h6>{formData.lastName.toUpperCase()}</h6> 
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={6} style={styles.customerInfoItem}>
                                 <Typography variant='caption'>
                                     e-mail:
-                                    </Typography> {formData.email}
+                                    </Typography> 
+                                    <h6>{formData.email.toUpperCase()}</h6>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={6} style={styles.customerInfoItem}>
                                 <Typography variant='caption'>
                                     Address:
-                                    </Typography> {formData.address}
+                                    </Typography> 
+                                    <h6>{formData.address.toUpperCase()}</h6>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={6} style={styles.customerInfoItem}>
                                 <Typography variant='caption'>
                                     City:
-                                    </Typography> {formData.city}
+                                    </Typography> 
+                                    <h6>{formData.city.toUpperCase()}</h6>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={6} style={styles.customerInfoItem}>
                                 <Typography variant='caption'>
                                     State:
-                                    </Typography> {formData.shippingSubdivision}
+                                    </Typography> 
+                                    <h6>{formData.shippingSubdivision.toUpperCase()}</h6>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={6} style={styles.customerInfoItem}>
                                 <Typography variant='caption'>
                                     Country:
-                                    </Typography> {formData.shippingCountry}
+                                    </Typography> 
+                                    <h6>{formData.shippingCountry.toUpperCase()}</h6>
                             </Grid>
 
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={6} style={styles.customerInfoItem}>
                                 <Typography variant='caption'>
                                     Zip Code:
-                                    </Typography> {formData.zipCode}
+                                    </Typography> 
+                                    <h6>{formData.zipCode.toUpperCase()}</h6>
+                                    </Grid>
+                                </Card>
                             </Grid>
-
+                            <Grid item xs={12} sm={6}>
+                                <Grid container>
+                                    <Grid item xs={12}>
+                                    <Typography variant="h2" align='center'>
+                                             Order {paymentStatus}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} >
+                                       <Typography variant="body1"><b>Shipping</b> . . . . . . . . .</Typography>  
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} >
+                                       <Typography variant='body1' align='right'><b> Included</b></Typography>  
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} >
+                                       <Typography variant="body1"><b>Taxes</b> . . . . . . . . . . . .</Typography>  
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} >
+                                       <Typography variant='body1' align='right'><b> Included</b></Typography>  
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} >
+                                       <Typography variant="body1"><b>Est Devlivery</b> . . . . . .</Typography>  
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} >
+                                       <Typography variant='body1' align='right'><b> less than 7 days</b></Typography>  
+                                    </Grid>
+                                    <Grid item xs={12} >
+                                       <Typography variant='body2' align='center'>Tracking and Shipping info will be emailed when items are shipped</Typography>  
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} style={styles.grandTotal}>
+                                       <Typography variant='h3'><b>Grand Total</b></Typography>  
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} align='right' style={styles.grandTotal}>
+                                       <Typography variant="h3"><b>{checkoutToken?.live?.total_with_tax.formatted_with_symbol}</b></Typography>  
+                                    </Grid>
+                                </Grid>
                         </Grid>
-
+                        </Grid>
                     </Grid>
-
                 </Container>}
             </div>
             <div className="section-space"></div>

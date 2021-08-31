@@ -31,7 +31,7 @@ const CatalogPage = props => {
             setPageProducts(selectedProducts)
             products.map(x => {
                 x.categories.map(y => {
-                    if (y.slug.includes(`${category}-${level}`) ) {
+                    if (y.slug.includes(category) && y.slug.includes(level) ) {
                             console.log(y, 'this is all the products that load in this tag')
                             selectedProducts.push(x)
                     }
@@ -40,7 +40,7 @@ const CatalogPage = props => {
             setPageProducts(selectedProducts)
         }
         handlePageSort(category, level)
-    },[])
+    },[category, level])
 
     const routeToItem = (id) => {
         history.push(`/item/${id}`)

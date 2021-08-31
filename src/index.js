@@ -61,8 +61,7 @@ ReactDOM.render(
                 path="/catelog/:category/:level"
                 render={(props) => <CatalogPage {...props} />}
               />
-
-              {/* <Redirect to="/home" /> */}
+              <Redirect to="/home" />
             </Switch>
           </Layout>
         </BrowserRouter>

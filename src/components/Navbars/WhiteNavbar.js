@@ -41,7 +41,7 @@ function WhiteNavbar(props) {
       <Navbar className="bg-white fixed-top" expand="lg">
         <Container>
           <div className="navbar-translate">
-            <NavbarBrand to="/" tag={Link} id="navbar-brand">
+            <NavbarBrand to="/home" tag={Link} id="navbar-brand">
               Nostalgia's Realm
             </NavbarBrand>
             <button

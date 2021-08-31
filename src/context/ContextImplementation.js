@@ -217,13 +217,17 @@ class ContextImplementation extends Component {
         }
     }
 
+    resetOrder =() => {
+        this.setState({order: {}})
+    }
+
     handleCaptureCheckout = async (id, order) => {
         try {
             let res = await service.captureCheckoutToken(id, order)
-            console.log(res.status, 'res from payment')
+            console.log(res, 'res from payment')
 
             // I have no idea why this is reloading my page much less what the fuck is happening when I hit submit on the damn form
-            this.setState({ order: res })
+            this.setState({ order: res.order })
             this.refreshCart()
             return true
         } catch (err) {
@@ -242,7 +246,6 @@ class ContextImplementation extends Component {
         try {
             let res = await service.validateQuantity(checkoutId, lineItemId, quantity)
             return res
-            console.log(res, 'enough quantity')
         } catch (err) {
             console.error(err)
         }
@@ -326,7 +329,8 @@ class ContextImplementation extends Component {
         handleValidateQuantity: this.handleValidateQuantity,
         fetchLiveCheckoutToken: this.fetchLiveCheckoutToken,
         handleTaxInfo: this.handleTaxInfo,
-        fetchIPAddress: this.fetchIPAddress
+        fetchIPAddress: this.fetchIPAddress,
+        resetOrder: this.resetOrder
     }
 
 
