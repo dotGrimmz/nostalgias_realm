@@ -88,7 +88,6 @@ const PaymentReviewPage = props => {
         }
     };
 
-    // console.log(formData, 'form data')
 
     useEffect(() => {
         const loadTaxes = async (checkoutId, city, zipcode) => {
@@ -183,7 +182,6 @@ const PaymentReviewPage = props => {
                 setPaymentStatus("Error")
             } else {
                 enqueueSnackbar("Order Complete!", { variant: 'Success' });
-
                 setPaymentStatus("Complete")
             }
         }

@@ -24,13 +24,16 @@ import ContextImplementation from '../src/context/ContextImplementation';
 import CatalogItemPage from './CatalogItemPage/CatalogItemPage.jsx';
 import CheckoutPage from './CheckoutPage/CheckoutPage.jsx';
 import PaymentReviewPage from './PaymentReviewPage/PaymentReviewPage.jsx';
+import ContactUsPage from "ContactUsPage/ContactUsPage";
 import { SnackbarProvider } from 'notistack';
+
 
 import '@fontsource/roboto';
 
 
 // others
 const promise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+
 
 ReactDOM.render(
   <Elements stripe={promise}>
@@ -60,6 +63,10 @@ ReactDOM.render(
                <Route
                 path="/catelog/:category/:level"
                 render={(props) => <CatalogPage {...props} />}
+              />
+               <Route
+                path="/contact"
+                render={(props) => <ContactUsPage {...props} />}
               />
               <Redirect to="/home" />
             </Switch>

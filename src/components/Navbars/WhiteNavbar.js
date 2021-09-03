@@ -14,7 +14,6 @@ import {
   NavItem,
   Nav,
   Container,
-  UncontrolledTooltip,
 } from "reactstrap";
 import ShoppingCartSharpIcon from '@material-ui/icons/ShoppingCartSharp';
 import Badge from '@material-ui/core/Badge';
@@ -166,7 +165,7 @@ function WhiteNavbar(props) {
                     <i className="now-ui-icons shopping_box"></i>
                     Testimonials
                   </DropdownItem>
-                  <DropdownItem to="/sections#features" tag={Link}>
+                  <DropdownItem to="/contact" tag={Link}>
                     <i className="now-ui-icons ui-2_settings-90"></i>
                     Contact Us
                   </DropdownItem>

@@ -20,8 +20,6 @@ const LandingPage = props => {
     let catalogObj = {
         page: 'Baseball',
         subtitle: "MLB",
-
-
     }
 
     const styles = {

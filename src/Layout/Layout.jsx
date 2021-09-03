@@ -12,6 +12,7 @@ const Layout = (props) => {
     const { children, history } = props;
     const [loading, setLoading] = useState(false)
 
+  
     const styles = {
 
 
@@ -69,6 +70,7 @@ const Layout = (props) => {
 
 
 
+
     // handle the geo location shit
     // useEffect(async () => {
     //     let location = await fetchIPAddress()
@@ -91,7 +93,6 @@ const Layout = (props) => {
             </div>
             }
             {!loading && children}
-
             <FooterBlack />
         </div>
     )
