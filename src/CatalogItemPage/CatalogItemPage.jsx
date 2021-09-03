@@ -103,7 +103,6 @@ const CatalogItemPage = props => {
 
         try {
             let message = await addToCart(id, 1);
-            console.log(message, 'message')
             enqueueSnackbar(message, { variant: 'success' });
         } catch (err) {
             console.error(err)

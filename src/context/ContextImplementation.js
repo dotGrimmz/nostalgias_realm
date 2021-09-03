@@ -131,7 +131,6 @@ class ContextImplementation extends Component {
                 return false
             }
 
-            console.log(res, 'discount obj in context')
 
         } catch (err) {
             console.error(err)

@@ -37,7 +37,7 @@ const useStyles = makeStyles({
         "radial-gradient(ellipse at center," +
         "grey" +
         " 0," +
-        "black" +
+        "lightgrey" +
         " 100%)",
         marginTop: '5%'
     }
@@ -50,7 +50,8 @@ const ContactUsPage = () => {
     const methods = useForm();
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
-    const { register, formState: { errors } } = useForm();
+    // const { register, formState: { errors } } = useForm();
+    const { register } = useForm();
     const [loading, setLoading] = useState(false);
     const [completedEmail, setCompletedEmail] = useState(false);
     const theme = useTheme();
@@ -70,7 +71,7 @@ const ContactUsPage = () => {
         setLoading(true)
         try {
             send(
-                'service_f4ry38e',
+                'service_ylefr9r',
                 'template_bcpk4ds',
                 {
                     from_name: data.fullName,
@@ -78,7 +79,7 @@ const ContactUsPage = () => {
                     message: data.message + "Phone number:" + data.phone,
                     reply_to: data.email,
                 },
-                'user_DhVTaL8DzIVgL0H8oYjdP'
+                'user_Au2qentxjS49kqrLzaEzn' // Nolans
             ). then(res => {
                 if(res.status ===200)  {
                     setCompletedEmail(true)

@@ -1,38 +1,24 @@
 import React, { useState, useEffect, useContext } from 'react';
 import DDContext from 'context/DDContext';
-import { makeStyles } from '@material-ui/core/styles';
 import CatalogSection from 'CatalogSection/CatalogSection';
 
-const useStyles = makeStyles({
-    root: {
-        background:
-            "radial-gradient(ellipse at center," +
-            "black" +
-            " 0," +
-            "grey" +
-            " 100%)",
-    },
 
-});
 
 const CatalogPage = props => {
     const { match, history } = props;
-    const classes = useStyles();
     const context = useContext(DDContext);
     const {  products } = context;
     const { category, level } = match.params
-    const [pageProducts, setPageProducts] = useState([])
+    const [pageProducts, setPageProducts] = useState(products)
 
      
     useEffect(()=> {
         const handlePageSort = (category, level) => {
             let selectedProducts = []
             // clear the page 
-            setPageProducts(selectedProducts)
-            products.map(x => {
-                x.categories.map(y => {
+            pageProducts.forEach(x => {
+                x.categories.forEach(y => {
                     if (y.slug.includes(category) && y.slug.includes(level) ) {
-                            console.log(y, 'this is all the products that load in this tag')
                             selectedProducts.push(x)
                     }
                 })
@@ -40,19 +26,16 @@ const CatalogPage = props => {
             setPageProducts(selectedProducts)
         }
         handlePageSort(category, level)
-    },[category, level])
+    },[category, level, pageProducts])
 
     const routeToItem = (id) => {
         history.push(`/item/${id}`)
     }
 
-    console.log('page products', pageProducts)
 
     let catalogObj = {
         page: category.toUpperCase(),
         subtitle: level.toUpperCase(),
-
-
     }
 
     return(

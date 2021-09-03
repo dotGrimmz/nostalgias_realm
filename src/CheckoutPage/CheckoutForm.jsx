@@ -61,7 +61,7 @@ const CheckoutForm = props => {
                             name='firstName'
                             label='First Name'
                             required
-                            {...register("firstName", { required: "This is required." })}
+                            {...register("firstName")}
                         />
                         <ErrorMessage errors={errors} name="firstName" />
 
@@ -69,7 +69,7 @@ const CheckoutForm = props => {
                             name='lastName'
                             label='Last Name'
                             required
-                            {...register("lastName", { required: "This is required." })}
+                            {...register("lastName")}
                         />
                         <ErrorMessage errors={errors} name="lastName" />
 
@@ -77,7 +77,7 @@ const CheckoutForm = props => {
                             name='email'
                             label='Email'
                             required
-                            {...register("email", { required: "This is required." })}
+                            {...register("email")}
                         />
                         <ErrorMessage errors={errors} name="email" />
 
@@ -90,7 +90,7 @@ const CheckoutForm = props => {
                             name='address'
                             label='Address'
                             required
-                            {...register("address", { required: "This is required." })}
+                            {...register("address")}
 
                         />
                         <ErrorMessage errors={errors} name="address" />
@@ -100,7 +100,7 @@ const CheckoutForm = props => {
                             name='city'
                             label='City'
                             required
-                            {...register("city", { required: "This is required." })}
+                            {...register("city")}
 
                         />
                         <ErrorMessage errors={errors} name="city" />
@@ -127,7 +127,7 @@ const CheckoutForm = props => {
                             name='zipCode'
                             label='Zip Code'
                             required
-                            {...register("zipCode", { required: "This is required." })}
+                            {...register("zipCode")}
                         />
                         <ErrorMessage errors={errors} name="zipCode" />
 
