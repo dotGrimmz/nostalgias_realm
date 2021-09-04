@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 // reactstrap components
 
@@ -13,10 +13,9 @@ import Slide from '@material-ui/core/Slide';
 
 function LandingPageHeader(props) {
   const { banner } = props;
-  const [loaded, setLoaded] =useState(false)
+  const [loaded, setLoaded] = useState(true)
   let pageHeader = React.createRef();
   React.useEffect(() => {
-    setLoaded(true)
     if (window.innerWidth > 991) {
       const updateScroll = () => {
         let windowScrollTop = window.pageYOffset / 3;
@@ -52,14 +51,14 @@ function LandingPageHeader(props) {
     },
     titleText: {
       color: 'Grey',
-      backgroundColor:'black',
+      backgroundColor: 'black',
       borderRadius: '70%',
       padding: '3.2%',
       marginRight: '10%'
     },
     subtitleText: {
       color: 'black',
-      backgroundColor:'white',
+      backgroundColor: 'white',
       borderRadius: '50%',
       padding: '5%',
       margin: '5%'
@@ -78,23 +77,23 @@ function LandingPageHeader(props) {
         ></div>
         <Container style={styles.container}>
           {banner && <Grid container justify="center" alignItems='center' direction='row'>
-          <Slide direction="left" in={loaded} mountOnEnter unmountOnExit>
-            <Grid item xs={12} md={4}>
-            <h1 className="title text-center" style={styles.titleText}>Experience Nostalgia</h1>
+            <Slide direction="left" in={loaded} mountOnEnter unmountOnExit>
+              <Grid item xs={12} md={4}>
+                <h1 className="title text-center" style={styles.titleText}>Experience Nostalgia</h1>
 
-            </Grid>
+              </Grid>
             </Slide>
             <Grid item xs={12} md={4} align='center'  >
-              <NostalgiasRealmIcon iconHeight={'350px'} iconWidth={'350px'} zoomIn/>
+              <NostalgiasRealmIcon iconHeight={'350px'} iconWidth={'350px'} zoomIn />
 
             </Grid>
             <Slide direction="right" in={loaded} mountOnEnter unmountOnExit>
-            <Grid item xs={12} md={4}  >
-            <h2 className="title text-center" style={styles.subtitleText}>Enter the realm</h2>
+              <Grid item xs={12} md={4}  >
+                <h2 className="title text-center" style={styles.subtitleText}>Enter the realm</h2>
 
-            </Grid>
+              </Grid>
             </Slide>
-           
+
           </Grid>}
         </Container>
       </div>
