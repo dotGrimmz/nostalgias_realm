@@ -18,8 +18,11 @@ import {
 import ShoppingCartSharpIcon from '@material-ui/icons/ShoppingCartSharp';
 import Badge from '@material-ui/core/Badge';
 import { useHistory } from "react-router-dom";
-
-
+import SportsBasketballIcon from '@material-ui/icons/SportsBasketball';
+import SportsBaseballIcon from '@material-ui/icons/SportsBaseball';
+import SportsFootballIcon from '@material-ui/icons/SportsFootball';
+import NostalgiasRealmIcon from '../../components/CustomIcons/NostalgiasRealmIcon'
+import { Grid } from "@material-ui/core";
 
 function WhiteNavbar(props) {
   const [collapseOpen, setCollapseOpen] = React.useState(false);
@@ -41,7 +44,15 @@ function WhiteNavbar(props) {
         <Container>
           <div className="navbar-translate">
             <NavbarBrand to="/home" tag={Link} id="navbar-brand">
-              Nostalgia's Realm
+              <Grid container justifyContent="center">
+                <Grid item xs={4} align='center'>
+                <NostalgiasRealmIcon />
+                </Grid>
+                <Grid item xs={8} align='right'>
+                Nostalgia's Realm
+
+                  </Grid>
+              </Grid>
             </NavbarBrand>
             <button
               onClick={() => {
@@ -68,16 +79,22 @@ function WhiteNavbar(props) {
                   nav
                   onClick={(e) => e.preventDefault()}
                 >
-                  <i className="now-ui-icons design_app"></i>
+                  <SportsBasketballIcon />
                   <p>BasketBall</p>
                 </DropdownToggle>
                 <DropdownMenu aria-labelledby="navbarDropdownMenuLink1" right>
-                  <DropdownItem to="/catelog/basketball/nba" tag={Link}>
-                    <i className="now-ui-icons design_image"></i>
+                  <DropdownItem to="/catelog/basketball/nba" tag={Link} >
+                  <i
+                    aria-hidden={true}
+                    className="now-ui-icons arrows-1_minimal-right"
+                  ></i>
                     NBA
                   </DropdownItem>
-                  <DropdownItem to="/catelog/basketball/ncaa" tag={Link}>
-                    <i className="now-ui-icons business_chart-pie-36"></i>
+                  <DropdownItem to="/catelog/basketball/ncaa" tag={Link} >
+                  <i
+                    aria-hidden={true}
+                    className="now-ui-icons arrows-1_minimal-right"
+                  ></i>
                     NCAA
                   </DropdownItem>
 
@@ -93,19 +110,22 @@ function WhiteNavbar(props) {
                   nav
                   onClick={(e) => e.preventDefault()}
                 >
-                  <i
-                    aria-hidden={true}
-                    className="now-ui-icons files_paper"
-                  ></i>
+                 <SportsFootballIcon />
                   <p>Football</p>
                 </DropdownToggle>
                 <DropdownMenu aria-labelledby="navbarDropdownMenuLink" right>
                   <DropdownItem to="/catelog/football/nfl" tag={Link}>
-                    <i className="now-ui-icons shopping_box"></i>
+                  <i
+                    aria-hidden={true}
+                    className="now-ui-icons arrows-1_minimal-right"
+                  ></i>
                     NFL
                   </DropdownItem>
                   <DropdownItem to="/catelog/football/ncaa" tag={Link}>
-                    <i className="now-ui-icons ui-2_settings-90"></i>
+                  <i
+                    aria-hidden={true}
+                    className="now-ui-icons arrows-1_minimal-right"
+                  ></i>
                     NCAA
                   </DropdownItem>
 
@@ -122,23 +142,29 @@ function WhiteNavbar(props) {
                   nav
                   onClick={(e) => e.preventDefault()}
                 >
-                  <i
-                    aria-hidden={true}
-                    className="now-ui-icons files_paper"
-                  ></i>
+                  <SportsBaseballIcon />
                   <p>Baseball</p>
                 </DropdownToggle>
                 <DropdownMenu aria-labelledby="navbarDropdownMenuLink" right>
                   <DropdownItem to="/catelog/baseball/mlb" tag={Link}>
-                    <i className="now-ui-icons shopping_box"></i>
+                  <i
+                    aria-hidden={true}
+                    className="now-ui-icons arrows-1_minimal-right"
+                  ></i>
                     MLB
                   </DropdownItem>
                   <DropdownItem to="/catelog/baseball/ncaa" tag={Link}>
-                    <i className="now-ui-icons ui-2_settings-90"></i>
+                    <i
+                    aria-hidden={true}
+                    className="now-ui-icons arrows-1_minimal-right"
+                  ></i>
                     NCAA
                   </DropdownItem>
                   <DropdownItem to="/catelog/baseball/highschool" tag={Link}>
-                    <i className="now-ui-icons ui-2_settings-90"></i>
+                    <i
+                    aria-hidden={true}
+                    className="now-ui-icons arrows-1_minimal-right"
+                  ></i>
                     High School
                   </DropdownItem>
                 </DropdownMenu>
@@ -156,23 +182,20 @@ function WhiteNavbar(props) {
                 >
                   <i
                     aria-hidden={true}
-                    className="now-ui-icons files_paper"
+                    className="now-ui-icons education_paper"
                   ></i>
                   <p>More</p>
                 </DropdownToggle>
                 <DropdownMenu aria-labelledby="navbarDropdownMenuLink" right>
                   <DropdownItem to="/sections#headers" tag={Link}>
                     <i className="now-ui-icons shopping_box"></i>
-                    Testimonials
+                    Events
                   </DropdownItem>
                   <DropdownItem to="/contact" tag={Link}>
                     <i className="now-ui-icons ui-2_settings-90"></i>
                     Contact Us
                   </DropdownItem>
-                  <DropdownItem to="/sections#features" tag={Link}>
-                    <i className="now-ui-icons ui-2_settings-90"></i>
-                    Discounts
-                  </DropdownItem>
+                
                 </DropdownMenu>
               </UncontrolledDropdown>
               <NavItem>

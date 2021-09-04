@@ -66,8 +66,8 @@ const useStyles = makeStyles({
 
 const ShoppingCart = React.memo((props) => {
     const context = useContext(DDTContext);
-    const { cleartCart, handleDiscountCode, cart, checkoutToken, fetchLiveCheckoutToken, handleTaxInfo } = context;
-    const { handleUpdateQuantity, handleRemoveItem, priceLoad } = props;
+    const { cleartCart, handleDiscountCode, cart, checkoutToken, fetchLiveCheckoutToken } = context;
+    const { handleUpdateQuantity, handleRemoveItem, priceLoad, routeToHomePage } = props;
 
     const [discount, setDiscount] = useState('');
     const classes = useStyles();
@@ -218,7 +218,7 @@ const ShoppingCart = React.memo((props) => {
                     <h4 style={{ color: 'lightgreen' }}>You Saved {checkoutToken.live.discount.amount_saved.formatted_with_symbol} with Discount Code {checkoutToken.live.discount.code}</h4>
                 </Grid>}
                 <Grid item xs={12} md={6} style={{ alignSelf: 'center', padding: '3%' }}>
-                    <Button onClick={() => handleTaxInfo(checkoutToken.id)} fullWidth classes={{ root: classes.shopBtn }} variant='contained' color='primary'>
+                    <Button onClick={routeToHomePage} fullWidth classes={{ root: classes.shopBtn }} variant='contained' color='primary'>
                         I need a few more things..
                     </Button>
                 </Grid>

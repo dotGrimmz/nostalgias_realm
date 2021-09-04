@@ -3,6 +3,7 @@ import React from "react";
 
 // reactstrap components
 import { Container } from "reactstrap";
+import NostalgiasRealmIcon from "components/CustomIcons/NostalgiasRealmIcon";
 
 // core components
 
@@ -22,24 +23,33 @@ function FooterBlack() {
 
               <li>
                 <a
-                  href="http://presentation.creative-tim.com?ref=nuk-pro-react-footer-black"
-                  target="_blank"
+                  href="/contact"
+                  
                 >
-                  About Us
+                  Contact Us
                 </a>
               </li>
               <li>
                 <a
-                  href="http://blog.creative-tim.com?ref=nuk-pro-react-footer-black"
+                  href="https://www.facebook.com/nostalgiasrealm"
                   target="_blank"
                 >
-                  Blog
+                  Facebook
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.instagram.com/fantasy_senpai/"
+                  target="_blank"
+                >
+                  Instagram
                 </a>
               </li>
             </ul>
           </nav>
-          <div className="copyright" id="copyright">
-            © {new Date().getFullYear()}, {" "}
+          <div className="copyright text-left" id="copyright" >
+          
+         © {new Date().getFullYear()}, {" "}
 
             Powered by{" "}
             <b
@@ -48,6 +58,9 @@ function FooterBlack() {
             </b>
             .
           </div>
+
+                 
+   
         </Container>
       </footer>
     </>

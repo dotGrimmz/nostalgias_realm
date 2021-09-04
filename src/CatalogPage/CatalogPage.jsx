@@ -13,10 +13,11 @@ const CatalogPage = props => {
 
      
     useEffect(()=> {
+        
         const handlePageSort = (category, level) => {
             let selectedProducts = []
             // clear the page 
-            pageProducts.forEach(x => {
+            products.forEach(x => {
                 x.categories.forEach(y => {
                     if (y.slug.includes(category) && y.slug.includes(level) ) {
                             selectedProducts.push(x)
@@ -26,7 +27,7 @@ const CatalogPage = props => {
             setPageProducts(selectedProducts)
         }
         handlePageSort(category, level)
-    },[category, level])
+    },[category, level, products])
 
     const routeToItem = (id) => {
         history.push(`/item/${id}`)

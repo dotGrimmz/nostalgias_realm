@@ -79,7 +79,7 @@ const ContactUsPage = () => {
                     message: data.message + "Phone number:" + data.phone,
                     reply_to: data.email,
                 },
-                'user_Au2qentxjS49KqrLzaEzn' // Nolans
+                'user_Au2qentxjS49KqrLzaEzn' 
             ). then(res => {
                 if(res.status ===200)  {
                     setCompletedEmail(true)
