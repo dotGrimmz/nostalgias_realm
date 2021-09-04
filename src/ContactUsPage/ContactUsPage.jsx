@@ -56,7 +56,6 @@ const ContactUsPage = () => {
     const [completedEmail, setCompletedEmail] = useState(false);
     const theme = useTheme();
     const mobileView = useMediaQuery(theme.breakpoints.down('sm'));
-    console.log(mobileView, 'mobile view ')
 
     const styles={
         container: {

@@ -3,7 +3,7 @@ import React from "react";
 
 // reactstrap components
 import { Container } from "reactstrap";
-import NostalgiasRealmIcon from "components/CustomIcons/NostalgiasRealmIcon";
+
 
 // core components
 
@@ -13,6 +13,7 @@ function FooterBlack() {
       flexShrink: 0
     }
   }
+
 
   return (
     <>
@@ -47,7 +48,7 @@ function FooterBlack() {
               </li>
             </ul>
           </nav>
-          <div className="copyright text-left" id="copyright" >
+          <div className="copyright text-center" id="copyright" >
           
          © {new Date().getFullYear()}, {" "}
 
