@@ -15,15 +15,12 @@ class ContextImplementation extends Component {
 
             let cart = await service.getCart()
             this.setState({ cart: cart })
-            console.log(this.state.cart, 'cart on mount')
-            console.log('this triggered first')
+       
             if (cart?.line_items?.length > 0) {
-                console.log(cart.id, 'cart id')
                 let token = await this.getCheckoutToken(cart.id)
 
                 if (token !== undefined) this.setState({ checkoutToken: token })
 
-                console.log('happened in compoinent did mount')
             }
         } catch (err) {
             console.error(err)
@@ -84,9 +81,7 @@ class ContextImplementation extends Component {
     handleRemoveItem = async (id) => {
         try {
             let cart = await service.deleteCartItem(id)
-            console.log(cart.cart, 'delete res')
             this.setState({ cart: cart.cart })
-            console.log(this.cart, 'cart')
             // if (cart?.total_items?.length > 0) {
             //     let token = await this.getCheckoutToken(cart.id)
 
@@ -150,7 +145,6 @@ class ContextImplementation extends Component {
     fetchShippingCountries = async (checkoutTokenId) => {
         try {
             let res = await service.fetchShippingCountries(checkoutTokenId)
-            console.log(res, 'res countries')
             if (res?.countries?.length === 0) {
                 this.setState({ countries: { id: "US", label: "United States" } })
 
@@ -193,18 +187,15 @@ class ContextImplementation extends Component {
     }
 
     getCheckoutToken = async (cartId) => {
-        console.log(cartId, 'should be the cart id to generate the checkout token')
         try {
             let token = await service.generateCheckoutToken(cartId)
             this.setState({ checkoutToken: token })
-            console.log(token, 'checkout token in get checkout token')
         } catch (err) {
             console.error(err)
         }
     }
 
     setCheckoutTokenToEmpty = () => {
-        console.log('cart must be empty so this triggers')
         this.setState({ checkoutToken: {} })
     }
 
@@ -230,7 +221,6 @@ class ContextImplementation extends Component {
     handleCaptureCheckout = async (id, order) => {
         try {
             let res = await service.captureCheckoutToken(id, order)
-            console.log(res, 'res from payment')
 
             // I have no idea why this is reloading my page much less what the fuck is happening when I hit submit on the damn form
             this.setState({ order: res.order })
@@ -269,7 +259,6 @@ class ContextImplementation extends Component {
                     live: res
                 }
             }))
-            console.log(this.checkoutToken.live, 'res after fetching live token')
         } catch (err) {
             this.setState({ errorMessage: err?.data?.error?.message })
         }
@@ -278,14 +267,12 @@ class ContextImplementation extends Component {
     handleTaxInfo = async (checkoutId, region, zipcode) => {
         try {
             let res = await service.getTaxInfo(checkoutId, region, zipcode)
-            console.log(res.live, 'tax info in context coming back from the service. match one')
             this.setState(prevState => ({
                 checkoutToken: {
                     ...prevState.checkoutToken,
                     live: res.live
                 }
             }))
-            console.log(this.state.checkoutToken.live, 'checkout token after tax info has been updated. match two')
         } catch (err) {
             console.error(err)
         }
@@ -342,7 +329,6 @@ class ContextImplementation extends Component {
 
     render() {
         const { children } = this.props;
-        console.log(this.state, 'state obj')
 
 
         return (

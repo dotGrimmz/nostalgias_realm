@@ -72,14 +72,14 @@ const ContactUsPage = () => {
         try {
             send(
                 'service_ylefr9r',
-                'template_bcpk4ds',
+                'template_fh45lml',
                 {
                     from_name: data.fullName,
                     to_name: "Nolan Jones",
                     message: data.message + "Phone number:" + data.phone,
                     reply_to: data.email,
                 },
-                'user_Au2qentxjS49kqrLzaEzn' // Nolans
+                'user_Au2qentxjS49KqrLzaEzn' // Nolans
             ). then(res => {
                 if(res.status ===200)  {
                     setCompletedEmail(true)

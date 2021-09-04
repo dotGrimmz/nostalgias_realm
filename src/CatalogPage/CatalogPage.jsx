@@ -26,7 +26,7 @@ const CatalogPage = props => {
             setPageProducts(selectedProducts)
         }
         handlePageSort(category, level)
-    },[category, level, pageProducts])
+    },[category, level])
 
     const routeToItem = (id) => {
         history.push(`/item/${id}`)

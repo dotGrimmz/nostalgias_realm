@@ -38,9 +38,9 @@ const LandingPage = props => {
             let defaultProducts = []
             try {
                 setFeaturedProducts(await featuredProducts)
-                products.map(x => {
+                products.forEach(x => {
                     let invalid = false
-                    x.categories.map(y => {
+                    x.categories.forEach(y => {
                         if (y.slug === 'featured') invalid = true
                     })
                     if (!invalid) defaultProducts.push(x)

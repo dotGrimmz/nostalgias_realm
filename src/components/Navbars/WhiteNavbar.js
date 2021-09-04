@@ -180,7 +180,7 @@ function WhiteNavbar(props) {
                   className="nav-link"
                   style={{ width: '90%' }}
                   target="_blank"
-                  fullWidth
+                  fullwidth="true"
                   onClick={() => history.push('/checkout')}
                 >
                   <Badge badgeContent={totalItems} >

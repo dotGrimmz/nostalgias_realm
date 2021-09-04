@@ -41,15 +41,12 @@ const Layout = (props) => {
             if (mounted) {
                 try {
                     await initializeCart();
-                    console.log('cart initialized completed')
 
 
 
                     await fetchFeaturedProducts();
-                    console.log('featured products completed');
 
                     await fetchProducts();
-                    console.log('products completed');
 
 
                 } catch (err) {
